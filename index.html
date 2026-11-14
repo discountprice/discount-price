@@ -1,402 +1,153 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Discount Price Admin</title>
+<meta name="description" content="Find the latest shopping deals, discounts and trusted stores at Discount Price.">
+<title>Discount Price — Deals, Coupons & Offers</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#101827;color:#fff;font-family:Arial,sans-serif}
-.hidden{display:none!important}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer;border:0;border-radius:7px;padding:12px 16px;background:#16a875;color:white;font-weight:bold}
-button:disabled{opacity:.5}
-input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;background:#101827;color:white;border:1px solid #42516a;border-radius:7px}
-label{display:block;color:#cbd5e1;font-size:14px}
-.login{max-width:400px;margin:70px auto;background:#1c293b;padding:30px;border-radius:14px}
-h1,h2{color:#38d996}
-.login h1{text-align:center}
-.login p{text-align:center;color:#aab5c5}
-#message{margin-top:15px;overflow-wrap:anywhere}
-header{background:#1c293b;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:15px}
-header h2{margin:0}
-main{max-width:1100px;margin:25px auto;padding:0 16px}
-.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-.tabs button{background:#29384d}
-.tabs button.active{background:#16a875}
-.panel{background:#1c293b;padding:22px;border-radius:12px;margin-bottom:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.store{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}
-.store h3{color:#38d996;margin-top:0}
-.store img{width:65px;height:65px;object-fit:contain;background:white;border-radius:8px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.secondary{background:#42516a}
-.danger{background:#c0392b}
-small{color:#aab5c5}
-#storeForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 14px}
-#storeForm .full{grid-column:1/-1}
-a{color:#38d996;overflow-wrap:anywhere}
-@media(max-width:500px){header{padding:14px;align-items:flex-start}main{margin:15px auto}.panel{padding:15px}}
+:root{--ink:#172033;--muted:#687386;--green:#12a875;--green2:#087f59;--bg:#f5f7fa;--line:#e7ebf0;--white:#fff;--dark:#101827}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Arial,sans-serif}a{color:inherit;text-decoration:none}button,input,select{font:inherit}.top{background:var(--dark);color:#dce5ef;padding:9px 5%;font-size:13px;text-align:center}.header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.nav{max-width:1200px;margin:auto;padding:17px 22px;display:flex;align-items:center;gap:25px}.brand{font-size:25px;font-weight:900;letter-spacing:-1px;color:var(--ink);white-space:nowrap}.brand span{color:var(--green)}.search{flex:1;display:flex;background:#f3f5f7;border:1px solid var(--line);border-radius:9px;overflow:hidden}.search input{flex:1;min-width:0;border:0;background:transparent;padding:13px 15px;outline:none}.search button{border:0;background:var(--green);color:white;padding:0 20px;font-weight:700;cursor:pointer}.admin{font-size:13px;color:var(--muted)}.hero{background:linear-gradient(115deg,#10243a,#174b4a);color:white;padding:54px 22px}.hero-inner{max-width:1150px;margin:auto}.eyebrow{color:#79e0b7;font-weight:800;text-transform:uppercase;font-size:12px;letter-spacing:1.6px}.hero h1{font-size:clamp(32px,5vw,52px);line-height:1.08;margin:12px 0;max-width:700px;letter-spacing:-1.5px}.hero p{color:#d1e2e2;font-size:17px;max-width:620px;line-height:1.6;margin:0}.hero-points{display:flex;gap:22px;flex-wrap:wrap;margin-top:24px;color:#e4f6ef;font-size:13px}.wrap{max-width:1150px;margin:34px auto;padding:0 22px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:18px}.section-head h2{font-size:24px;margin:0;letter-spacing:-.5px}.section-head p{margin:5px 0 0;color:var(--muted);font-size:14px}.chips{display:flex;gap:9px;overflow:auto;padding:3px 0 14px}.chip{border:1px solid var(--line);background:white;border-radius:30px;padding:10px 15px;white-space:nowrap;color:#39465a;cursor:pointer;font-size:13px;font-weight:700}.chip.active,.chip:hover{background:#e8f8f1;border-color:#a7e4ca;color:var(--green2)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.card{background:white;border:1px solid var(--line);border-radius:13px;padding:17px;transition:.18s;min-width:0}.card:hover{transform:translateY(-3px);box-shadow:0 10px 28px #14213a12;border-color:#cbd8d2}.logo{height:90px;display:flex;align-items:center;justify-content:center;background:#fafbfc;border:1px solid #f0f2f5;border-radius:9px;margin-bottom:14px;padding:12px}.logo img{max-width:100%;max-height:65px;object-fit:contain}.logo-fallback{font-size:25px;font-weight:900;color:var(--green)}.tag{display:inline-block;background:#e8f8f1;color:#087f59;border-radius:5px;padding:5px 8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}.card h3{font-size:16px;margin:10px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card p{color:var(--muted);font-size:12px;line-height:1.5;min-height:34px;margin:0 0 13px}.card-foot{display:flex;justify-content:space-between;align-items:center;gap:8px}.country{font-size:11px;color:var(--muted)}.visit{background:var(--green);color:white;padding:9px 12px;border-radius:7px;font-size:12px;font-weight:800;white-space:nowrap}.visit:hover{background:var(--green2)}.empty,.loading{background:white;border:1px dashed #d5dce5;border-radius:12px;padding:35px;text-align:center;color:var(--muted);grid-column:1/-1}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}.stat{background:white;border:1px solid var(--line);padding:17px;border-radius:11px}.stat strong{font-size:25px;color:var(--green2);display:block}.stat span{font-size:12px;color:var(--muted)}footer{background:#101827;color:#dbe4ee;margin-top:55px;padding:35px 22px}.footer-inner{max-width:1150px;margin:auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer-inner p{color:#9eacbd;font-size:13px}.footer-brand{font-weight:900;font-size:21px}.footer-brand span{color:#46d49f}#notice{font-size:13px;color:#b45309;margin:12px 0}.hide{display:none!important}
+@media(max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.nav{gap:15px}.admin{display:none}}
+@media(max-width:650px){.nav{padding:13px 15px;flex-wrap:wrap}.brand{font-size:22px}.search{order:3;flex-basis:100%}.hero{padding:39px 18px}.wrap{padding:0 15px;margin:27px auto}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.card{padding:12px}.logo{height:75px}.logo img{max-height:54px}.card h3{font-size:14px}.section-head h2{font-size:21px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}}
+@media(max-width:360px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
-<section id="loginPage" class="login">
-<h1>Discount Price</h1>
-<p>Admin Portal Login</p>
-<form id="loginForm">
-<label>Admin Email</label>
-<input type="email" id="email" required placeholder="Admin email">
-<label>Password</label>
-<input type="password" id="password" required placeholder="Password">
-<button type="submit" style="width:100%">Login to Dashboard</button>
-</form>
-<button id="forgotBtn" class="secondary" style="width:100%;margin-top:12px">Forgot Password?</button>
-<div id="loginMessage"></div>
-</section>
-
-<section id="resetPage" class="login hidden">
-<h1>New Password</h1>
-<form id="resetForm">
-<label>New Password</label>
-<input type="password" id="newPassword" minlength="8" required>
-<label>Confirm Password</label>
-<input type="password" id="confirmPassword" minlength="8" required>
-<button style="width:100%">Save Password</button>
-</form>
-<div id="resetMessage"></div>
-</section>
-
-<section id="dashboard" class="hidden">
-<header>
-<h2>Discount Price Admin</h2>
-<button id="logoutBtn" class="danger">Logout</button>
+<div class="top">Smart shopping starts here — discover stores and offers with Discount Price</div>
+<header class="header">
+  <div class="nav">
+    <a class="brand" href="./">Discount<span>Price</span></a>
+    <form class="search" id="searchForm">
+      <input id="searchInput" type="search" placeholder="Search stores, brands or categories..." aria-label="Search stores">
+      <button type="submit">Search</button>
+    </form>
+    <a class="admin" href="./admin.html">Admin Login</a>
+  </div>
 </header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Deals worth discovering</div>
+    <h1>Find your favourite stores. Shop smarter.</h1>
+    <p>Explore shopping brands, browse useful categories and discover offers in one simple place.</p>
+    <div class="hero-points"><span>✓ Trusted store links</span><span>✓ Easy category browsing</span><span>✓ Fresh offers as they are added</span></div>
+  </div>
+</section>
 <main>
-<div class="tabs">
-<button class="active" id="storesTab">Stores</button>
-<button id="couponsTab" class="secondary">Coupons</button>
-<button id="categoriesTab" class="secondary">Categories</button>
-<button id="campaignsTab" class="secondary">Promo Campaigns</button>
-<button id="analyticsTab" class="secondary">Analytics</button>
-</div>
-
-<section id="storesSection">
-<div class="panel">
-<h2>Store Management</h2>
-<p><small>Add and manage your affiliate stores.</small></p>
-<button id="addStoreBtn">+ Add New Store</button>
-<input id="searchStore" placeholder="Search stores...">
-<div id="storeMessage"></div>
-</div>
-
-<div class="panel hidden" id="formPanel">
-<h2 id="formHeading">Add New Store</h2>
-<form id="storeForm">
-<input type="hidden" id="editId">
-<div><label>Store Name *</label><input id="storeName" required placeholder="Example: Nike"></div>
-<div><label>Website URL</label><input id="webUrl" type="url" placeholder="https://example.com"></div>
-<div><label>Affiliate URL</label><input id="affUrl" type="url" placeholder="https://affiliate-link.com"></div>
-<div><label>Logo URL</label><input id="logoUrl" type="url" placeholder="https://example.com/logo.png"></div>
-<div><label>Country</label><input id="country" placeholder="Pakistan, UK, Germany..."></div>
-<div>
-  <label>Category</label>
-  <select id="categoryId">
-    <option value="">Select Category</option>
-  </select>
-</div><div><label>Slug</label><input id="slug" placeholder="nike"></div>
-<div><label>Status</label>
-<select id="status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
-<div class="full"><label>Description</label><textarea id="description" rows="3" placeholder="Store description"></textarea></div>
-<div class="full actions">
-<button type="submit" id="saveStoreBtn">Save Store</button>
-<button type="button" class="secondary" id="cancelStoreBtn">Cancel</button>
-</div>
-</form>
-</div>
-
-<div class="panel">
-<h2>All Stores</h2>
-<div id="storeList" class="grid">Loading stores...</div>
-</div>
-</section>
-
-<section id="otherSection" class="panel hidden">
-<h2 id="otherHeading">Coming Soon</h2>
-<p id="otherText">This section will be connected after its database structure is checked.</p>
-</section>
+  <section class="wrap">
+    <div class="section-head"><div><h2>Browse Categories</h2><p>Choose a category to explore relevant stores.</p></div></div>
+    <div id="categoryChips" class="chips"><span class="loading">Loading categories...</span></div>
+    <div id="notice"></div>
+  </section>
+  <section class="wrap">
+    <div class="section-head"><div><h2 id="storeHeading">Popular Stores</h2><p>Discover stores available on Discount Price.</p></div></div>
+    <div id="storeGrid" class="grid"><div class="loading">Loading stores...</div></div>
+    <div class="stats">
+      <div class="stat"><strong id="storeCount">—</strong><span>Active stores</span></div>
+      <div class="stat"><strong id="categoryCount">—</strong><span>Categories</span></div>
+      <div class="stat"><strong>24/7</strong><span>Browse anytime</span></div>
+    </div>
+  </section>
 </main>
-</section>
-
+<footer><div class="footer-inner"><div><div class="footer-brand">Discount<span>Price</span></div><p>Discover stores and shop smarter.</p></div><div><strong>Explore</strong><p><a href="./">Home</a> · <a href="./admin.html">Admin</a></p><p>© <span id="year"></span> Discount Price</p></div></div></footer>
 <script>
 const client = window.supabase.createClient(
   "https://eyaukiovgugmiyytybdg.supabase.co",
   "sb_publishable_qahiC18UeUqc6qVosbenCw_zKmQ7vb1"
 );
-
 const $ = id => document.getElementById(id);
-let stores = [];
+let allStores = [];
+let allCategories = [];
+let activeCategory = "all";
 
-function message(id,text,ok=false){
-  $(id).textContent=text;
-  $(id).style.color=ok?"#38d996":"#ff7777";
+function safeUrl(value) {
+  try { const u = new URL(value); return ["http:","https:"].includes(u.protocol) ? u.href : ""; }
+  catch { return ""; }
 }
-async function loadCategories(){
-  const {data,error}=await client
-    .from("categories")
-    .select("id,name,category_type")
-    .eq("is_active",true)
-    .order("name");
-
-  if(error){
-    alert("Categories error: "+error.message);
-    return;
-  }
-
-  const dropdown=$("categoryId");
-  dropdown.innerHTML='<option value="">Select Category</option>';
-
-  (data||[]).forEach(category=>{
-    const option=document.createElement("option");
-    option.value=category.id;
-    option.textContent=category.category_type.toUpperCase()+" - "+category.name;
-    dropdown.appendChild(option);
-  });
-}function showDashboard(){
-  $("loginPage").classList.add("hidden");
-  $("resetPage").classList.add("hidden");
-  $("dashboard").classList.remove("hidden");
-loadCategories();
-loadStores();}
-function showLogin(){
-  $("dashboard").classList.add("hidden");
-  $("resetPage").classList.add("hidden");
-  $("loginPage").classList.remove("hidden");
-}
-
-$("loginForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const {error}=await client.auth.signInWithPassword({
-    email:$("email").value.trim(),
-    password:$("password").value
-  });
-  if(error){message("loginMessage",error.message);return;}
-  message("loginMessage","Login successful!",true);
-  showDashboard();
-});
-
-$("forgotBtn").onclick=async()=>{
-  const email=$("email").value.trim();
-  if(!email){message("loginMessage","Pehle Admin Email enter karein.");return;}
-  const {error}=await client.auth.resetPasswordForEmail(email,{
-    redirectTo:"https://discountprice.github.io/discount-price/"
-  });
-  message("loginMessage",error?error.message:"Recovery email sent. Inbox check karein.",!error);
-};
-
-client.auth.onAuthStateChange((event,session)=>{
-  if(event==="PASSWORD_RECOVERY" && session){
-    $("loginPage").classList.add("hidden");
-    $("resetPage").classList.remove("hidden");
-  }
-});
-
-$("resetForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const p=$("newPassword").value;
-  if(p!==$("confirmPassword").value){message("resetMessage","Passwords match nahi karte.");return;}
-  const {error}=await client.auth.updateUser({password:p});
-  if(error){message("resetMessage",error.message);return;}
-  await client.auth.signOut();
-  message("resetMessage","Password updated. Ab login karein.",true);
-  showLogin();
-});
-
-$("logoutBtn").onclick=async()=>{
-  await client.auth.signOut();
-  stores=[];
-  showLogin();
-};
-
-function makeSlug(value){
-  return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-}
-$("storeName").addEventListener("input",()=>{
-  if(!$("editId").value) $("slug").value=makeSlug($("storeName").value);
-});
-
-function resetStoreForm(){
-  $("storeForm").reset();
-  $("editId").value="";
-  $("formHeading").textContent="Add New Store";
-  $("saveStoreBtn").textContent="Save Store";
-  $("formPanel").classList.add("hidden");
-}
-
-$("addStoreBtn").onclick=()=>{
-  resetStoreForm();
-  $("formPanel").classList.remove("hidden");
-  $("formHeading").textContent="Add New Store";
-};
-$("cancelStoreBtn").onclick=resetStoreForm;
-
-$("storeForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const id=$("editId").value;
-  const record={
-    name:$("storeName").value.trim(),
-    slug:$("slug").value.trim() || makeSlug($("storeName").value),
-    web_url:$("webUrl").value.trim() || null,
-    aff_url:$("affUrl").value.trim() || null,
-    logo_url:$("logoUrl").value.trim() || null,
-    description:$("description").value.trim() || null,
-    country:$("country").value.trim() || null,
-    category_id:$("categoryId").value.trim() || null,
-    status:$("status").value
+function renderCategories() {
+  const box = $("categoryChips");
+  box.replaceChildren();
+  const addChip = (label, value) => {
+    const b = document.createElement("button");
+    b.className = "chip" + (activeCategory === value ? " active" : "");
+    b.textContent = label;
+    b.onclick = () => { activeCategory = value; renderCategories(); renderStores(); };
+    box.appendChild(b);
   };
-
-  $("saveStoreBtn").disabled=true;
-  const result=id
-    ? await client.from("stores").update(record).eq("id",id)
-    : await client.from("stores").insert(record);
-
-  $("saveStoreBtn").disabled=false;
-  if(result.error){
-    message("storeMessage","Error: "+result.error.message);
-    return;
-  }
-  message("storeMessage",id?"Store updated successfully!":"Store added successfully!",true);
-  resetStoreForm();
-  await loadStores();
-});
-
-function addText(parent,tag,text,className){
-  const el=document.createElement(tag);
-  el.textContent=text??"";
-  if(className)el.className=className;
-  parent.appendChild(el);
-  return el;
+  addChip("All Stores", "all");
+  allCategories.forEach(c => addChip(c.name, c.id));
+  $("categoryCount").textContent = allCategories.length;
 }
-
-function renderStores(){
-  const list=$("storeList");
-  list.replaceChildren();
-  const term=$("searchStore").value.toLowerCase();
-  const filtered=stores.filter(s=>
-    (s.name||"").toLowerCase().includes(term) ||
-    (s.country||"").toLowerCase().includes(term)
-  );
-  if(!filtered.length){
-    addText(list,"p","No stores found.");
+function renderStores() {
+  const grid = $("storeGrid");
+  grid.replaceChildren();
+  const term = $("searchInput").value.trim().toLowerCase();
+  const filtered = allStores.filter(s => {
+    const matchesCategory = activeCategory === "all" || s.category_id === activeCategory;
+    const category = allCategories.find(c => c.id === s.category_id);
+    const text = [s.name, s.country, s.description, category?.name].join(" ").toLowerCase();
+    return matchesCategory && text.includes(term);
+  });
+  $("storeHeading").textContent = activeCategory === "all" ? (term ? "Search Results" : "Popular Stores") : (allCategories.find(c => c.id === activeCategory)?.name || "Stores");
+  if (!filtered.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = term ? "No stores match your search. Try another word." : "No active stores in this category yet. Please check back soon.";
+    grid.appendChild(empty);
     return;
   }
-
-  filtered.forEach(s=>{
-    const card=document.createElement("article");
-    card.className="store";
-    if(s.logo_url){
-      const img=document.createElement("img");
-      img.src=s.logo_url;
-      img.alt=(s.name||"")+" logo";
-      img.onerror=()=>img.remove();
-      card.appendChild(img);
+  filtered.forEach(s => {
+    const card = document.createElement("article"); card.className = "card";
+    const logo = document.createElement("div"); logo.className = "logo";
+    const logoUrl = safeUrl(s.logo_url);
+    if (logoUrl) {
+      const img = document.createElement("img"); img.src = logoUrl; img.alt = s.name + " logo";
+      img.onerror = () => { img.remove(); const f = document.createElement("span"); f.className="logo-fallback"; f.textContent=(s.name||"DP").slice(0,2).toUpperCase(); logo.appendChild(f); };
+      logo.appendChild(img);
+    } else {
+      const f = document.createElement("span"); f.className="logo-fallback"; f.textContent=(s.name||"DP").slice(0,2).toUpperCase(); logo.appendChild(f);
     }
-    addText(card,"h3",s.name||"Unnamed Store");
-    addText(card,"p","Country: "+(s.country||"Not set"));
-    addText(card,"p","Status: "+(s.status||"Not set"));
-    if(s.web_url){
-      const a=addText(card,"a","Visit Website");
-      a.href=s.web_url;a.target="_blank";a.rel="noopener noreferrer";
+    card.appendChild(logo);
+    const cat = allCategories.find(c => c.id === s.category_id);
+    const tag = document.createElement("span"); tag.className="tag"; tag.textContent=cat?.name || "Store"; card.appendChild(tag);
+    const h = document.createElement("h3"); h.textContent=s.name || "Store"; card.appendChild(h);
+    const p = document.createElement("p"); p.textContent=s.description || "Explore this store and discover its latest offers."; card.appendChild(p);
+    const foot = document.createElement("div"); foot.className="card-foot";
+    const country = document.createElement("span"); country.className="country"; country.textContent=s.country || "Online store"; foot.appendChild(country);
+    const link = safeUrl(s.aff_url) || safeUrl(s.web_url);
+    if (link) {
+      const a = document.createElement("a"); a.className="visit"; a.href=link; a.target="_blank"; a.rel="noopener noreferrer sponsored"; a.textContent="Visit Store"; foot.appendChild(a);
+    } else {
+      const label = document.createElement("span"); label.className="country"; label.textContent="Link coming soon"; foot.appendChild(label);
     }
-    if(s.aff_url){
-      const a=addText(card,"a","Affiliate Link");
-      a.href=s.aff_url;a.target="_blank";a.rel="noopener noreferrer";
-    }
-    addText(card,"p",s.description||"");
-    const actions=document.createElement("div");
-    actions.className="actions";
-    const edit=document.createElement("button");
-    edit.textContent="Edit";
-    edit.onclick=()=>editStore(s);
-    actions.appendChild(edit);
-    const del=document.createElement("button");
-    del.textContent="Delete";
-    del.className="danger";
-    del.onclick=()=>deleteStore(s.id,s.name);
-    actions.appendChild(del);
-    card.appendChild(actions);
-    list.appendChild(card);
+    card.appendChild(foot); grid.appendChild(card);
   });
 }
-
-async function loadStores(){
-  $("storeList").textContent="Loading stores...";
-  const {data,error}=await client.from("stores")
-    .select("id,name,slug,category_id,web_url,logo_url,description,aff_url,country,status,created_at")
-    .order("created_at",{ascending:false});
-  if(error){
-    $("storeList").textContent="Could not load stores: "+error.message;
+async function loadPageData() {
+  const [catResult, storeResult] = await Promise.all([
+    client.from("categories").select("id,name,slug,category_type").eq("is_active", true).order("name"),
+    client.from("stores").select("id,name,slug,category_id,web_url,logo_url,description,aff_url,country,status,created_at").eq("status","active").order("created_at",{ascending:false})
+  ]);
+  if (catResult.error) {
+    $("categoryChips").textContent = "Could not load categories: " + catResult.error.message;
+    $("notice").textContent = "Please check the categories public read policy in Supabase.";
+  } else {
+    allCategories = catResult.data || []; renderCategories();
+  }
+  if (storeResult.error) {
+    $("storeGrid").textContent = "Could not load stores: " + storeResult.error.message;
+    $("notice").textContent = "Please check the stores public read policy in Supabase.";
     return;
   }
-  stores=data||[];
+  allStores = storeResult.data || [];
+  $("storeCount").textContent = allStores.length;
   renderStores();
 }
-
-function editStore(s){
-  $("editId").value=s.id;
-  $("storeName").value=s.name||"";
-  $("slug").value=s.slug||"";
-  $("webUrl").value=s.web_url||"";
-  $("affUrl").value=s.aff_url||"";
-  $("logoUrl").value=s.logo_url||"";
-  $("description").value=s.description||"";
-  $("country").value=s.country||"";
-  $("categoryId").value=s.category_id||"";
-  $("status").value=s.status||"active";
-  $("formHeading").textContent="Edit Store";
-  $("saveStoreBtn").textContent="Update Store";
-  $("formPanel").classList.remove("hidden");
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function deleteStore(id,name){
-  if(!confirm("Delete "+(name||"this store")+"? This cannot be undone."))return;
-  const {error}=await client.from("stores").delete().eq("id",id);
-  if(error){message("storeMessage","Delete error: "+error.message);return;}
-  message("storeMessage","Store deleted.",true);
-  await loadStores();
-}
-
-$("searchStore").addEventListener("input",renderStores);
-
-const sections=["stores","coupons","categories","campaigns","analytics"];
-const headings={
-  stores:"Stores",
-  coupons:"Coupons",
-  categories:"Categories",
-  campaigns:"Promo Campaigns",
-  analytics:"Analytics"
-};
-sections.forEach(key=>{
-  const btn=$(key+"Tab");
-  btn.onclick=()=>{
-    sections.forEach(k=>$(k+"Tab").className=k===key?"active":"secondary");
-    $("storesSection").classList.toggle("hidden",key!=="stores");
-    $("otherSection").classList.toggle("hidden",key==="stores");
-    $("otherHeading").textContent=headings[key];
-    $("otherText").textContent=key==="analytics"
-      ?"Analytics will be connected after click tracking is configured."
-      :"This section will be connected after its database columns and security are checked.";
-  };
-});
-
-client.auth.getSession().then(({data,error})=>{
-  if(error){showLogin();return;}
-  if(data.session)showDashboard();
-  else showLogin();
-});
+$("searchForm").addEventListener("submit", e => { e.preventDefault(); renderStores(); });
+$("searchInput").addEventListener("input", renderStores);
+$("year").textContent = new Date().getFullYear();
+loadPageData();
 </script>
 </body>
 </html>
