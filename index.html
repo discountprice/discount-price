@@ -8,46 +8,181 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;place-items:center;background:#101827;font-family:Arial;color:white;padding:20px}
-.login{width:100%;max-width:400px;background:#1c293b;padding:35px;border-radius:16px}
+body{
+ margin:0;min-height:100vh;display:grid;place-items:center;
+ background:#101827;font-family:Arial;color:white;padding:20px
+}
+.login{
+ width:100%;max-width:400px;background:#1c293b;
+ padding:35px;border-radius:16px
+}
 h1{text-align:center;color:#38d996}
 p{text-align:center;color:#aab5c5}
-input,button{width:100%;padding:14px;margin-top:15px;border-radius:8px;font-size:15px}
+input,button{
+ width:100%;padding:14px;margin-top:15px;
+ border-radius:8px;font-size:15px
+}
 input{background:#101827;color:white;border:1px solid #42516a}
 button{background:#16a875;color:white;border:0;font-weight:bold;cursor:pointer}
-#message{text-align:center;margin-top:18px}
+button:disabled{opacity:.6}
+#message{text-align:center;margin-top:18px;overflow-wrap:anywhere}
+a{color:#38d996;display:block;text-align:center;margin-top:18px}
+.hidden{display:none}
 </style>
 </head>
 <body>
 <div class="login">
+
 <h1>Discount Price</h1>
-<p>Admin Portal Login</p>
+<p id="heading">Admin Portal Login</p>
+
 <form id="loginForm">
 <input type="email" id="email" placeholder="Admin Email" required>
 <input type="password" id="password" placeholder="Password" required>
-<button id="loginBtn">Login to Dashboard</button>
+<button type="submit" id="loginBtn">Login to Dashboard</button>
 </form>
+
+<form id="forgotForm" class="hidden">
+<input type="email" id="forgotEmail" placeholder="Your Admin Email" required>
+<button type="submit">Send Recovery Email</button>
+</form>
+
+<form id="resetForm" class="hidden">
+<input type="password" id="newPassword" placeholder="New Password (minimum 8 characters)" minlength="8" required>
+<input type="password" id="confirmPassword" placeholder="Confirm New Password" minlength="8" required>
+<button type="submit">Save New Password</button>
+</form>
+
+<a href="#" id="forgotLink">Forgot Password?</a>
+<a href="#" id="backLink" class="hidden">Back to Login</a>
+
 <div id="message"></div>
 </div>
+
 <script>
 const client = window.supabase.createClient(
 "https://eyaukiovgugmiyytybdg.supabase.co",
 "sb_publishable_qahiC18UeUqc6qVosbenCw_zKmQ7vb1"
 );
-document.getElementById("loginForm").addEventListener("submit",async e=>{
-e.preventDefault();
+
+const loginForm=document.getElementById("loginForm");
+const forgotForm=document.getElementById("forgotForm");
+const resetForm=document.getElementById("resetForm");
 const message=document.getElementById("message");
-const btn=document.getElementById("loginBtn");
-btn.disabled=true;
-message.textContent="Please wait...";
-const {error}=await client.auth.signInWithPassword({
-email:document.getElementById("email").value.trim(),
-password:document.getElementById("password").value
+const heading=document.getElementById("heading");
+const forgotLink=document.getElementById("forgotLink");
+const backLink=document.getElementById("backLink");
+
+function showMessage(text,success=false){
+ message.style.color=success?"#38d996":"#ff7777";
+ message.textContent=text;
+}
+
+function showPage(page){
+ loginForm.classList.toggle("hidden",page!=="login");
+ forgotForm.classList.toggle("hidden",page!=="forgot");
+ resetForm.classList.toggle("hidden",page!=="reset");
+ forgotLink.classList.toggle("hidden",page!=="login");
+ backLink.classList.toggle("hidden",page==="login");
+ heading.textContent={
+ login:"Admin Portal Login",
+ forgot:"Recover Your Password",
+ reset:"Create New Password"
+ }[page];
+ message.textContent="";
+}
+
+forgotLink.onclick=e=>{
+ e.preventDefault();
+ showPage("forgot");
+};
+
+backLink.onclick=e=>{
+ e.preventDefault();
+ showPage("login");
+};
+
+loginForm.addEventListener("submit",async e=>{
+ e.preventDefault();
+ const btn=document.getElementById("loginBtn");
+ btn.disabled=true;
+ const {data,error}=await client.auth.signInWithPassword({
+  email:document.getElementById("email").value.trim(),
+  password:document.getElementById("password").value
+ });
+ if(error){
+  showMessage(error.message);
+ }else{
+  showMessage("Login successful! Authentication complete.",true);
+ }
+ btn.disabled=false;
 });
-message.textContent=error?error.message:"Login successful! Admin authenticated.";
-message.style.color=error?"#ff7777":"#38d996";
-btn.disabled=false;
+
+forgotForm.addEventListener("submit",async e=>{
+ e.preventDefault();
+ const email=document.getElementById("forgotEmail").value.trim();
+ const {error}=await client.auth.resetPasswordForEmail(email,{
+  redirectTo:"https://discountprice.github.io/discount-price/"
+ });
+ if(error){
+  showMessage(error.message);
+ }else{
+  showMessage("Recovery email sent. Check your inbox.",true);
+ }
 });
+
+let recoverySession=false;
+
+client.auth.onAuthStateChange((event,session)=>{
+ if(event==="PASSWORD_RECOVERY" && session){
+  recoverySession=true;
+  showPage("reset");
+ }
+});
+
+resetForm.addEventListener("submit",async e=>{
+ e.preventDefault();
+
+ const p1=document.getElementById("newPassword").value;
+ const p2=document.getElementById("confirmPassword").value;
+
+ if(p1.length<8){
+  showMessage("Password must be at least 8 characters.");
+  return;
+ }
+
+ if(p1!==p2){
+  showMessage("Passwords do not match.");
+  return;
+ }
+
+ const btn=resetForm.querySelector("button");
+ btn.disabled=true;
+
+ const {error}=await client.auth.updateUser({password:p1});
+
+ if(error){
+  showMessage(error.message);
+ }else{
+  showMessage("New password saved successfully! You can now login.",true);
+  resetForm.reset();
+  await client.auth.signOut();
+  recoverySession=false;
+  showPage("login");
+ }
+
+ btn.disabled=false;
+});
+
+client.auth.getSession().then(({data})=>{
+ if(data.session && !recoverySession){
+  // Existing login session is available.
+ }
+});
+
+if(window.location.hash.includes("error=")){
+ showMessage("Recovery link invalid or expired. Request a fresh recovery email.");
+}
 </script>
 </body>
 </html>
