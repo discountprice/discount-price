@@ -6,7 +6,7 @@
 <title>Discount Price Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#101827;color:#fff;font-family:Arial,sans-serif}.hidden{display:none!important}button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:7px;padding:12px 16px;background:#16a875;color:white;font-weight:bold}button:disabled{opacity:.5}input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;background:#101827;color:white;border:1px solid #42516a;border-radius:7px}label{display:block;color:#cbd5e1;font-size:14px}.login{max-width:400px;margin:70px auto;background:#1c293b;padding:30px;border-radius:14px}h1,h2{color:#38d996}.login h1{text-align:center}.login p{text-align:center;color:#aab5c5}#message{margin-top:15px;overflow-wrap:anywhere}header{background:#1c293b;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:15px}header h2{margin:0}main{max-width:1100px;margin:25px auto;padding:0 16px}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.tabs button{background:#29384d}.tabs button.active{background:#16a875}.panel{background:#1c293b;padding:22px;border-radius:12px;margin-bottom:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.store{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}.store h3{color:#38d996;margin-top:0}.store img{width:65px;height:65px;object-fit:contain;background:white;border-radius:8px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.secondary{background:#42516a}.danger{background:#c0392b}small{color:#aab5c5}#storeForm,#couponForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 14px}#storeForm .full,#couponForm .full{grid-column:1/-1}a{color:#38d996;overflow-wrap:anywhere}.notice{margin:10px 0;overflow-wrap:anywhere}.coupon{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}.coupon h3{color:#38d996;margin-top:0}.muted{color:#aab5c5;font-size:13px}@media(max-width:500px){header{padding:14px;align-items:flex-start}main{margin:15px auto}.panel{padding:15px}}
+*{box-sizing:border-box}body{margin:0;background:#101827;color:#fff;font-family:Arial,sans-serif}.hidden{display:none!important}button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:7px;padding:12px 16px;background:#16a875;color:white;font-weight:bold}button:disabled{opacity:.5}input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;background:#101827;color:white;border:1px solid #42516a;border-radius:7px}label{display:block;color:#cbd5e1;font-size:14px}.login{max-width:400px;margin:70px auto;background:#1c293b;padding:30px;border-radius:14px}h1,h2{color:#38d996}.login h1{text-align:center}.login p{text-align:center;color:#aab5c5}#message{margin-top:15px;overflow-wrap:anywhere}header{background:#1c293b;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:15px}header h2{margin:0}main{max-width:1100px;margin:25px auto;padding:0 16px}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.tabs button{background:#29384d}.tabs button.active{background:#16a875}.panel{background:#1c293b;padding:22px;border-radius:12px;margin-bottom:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.store{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}.store h3{color:#38d996;margin-top:0}.store img{width:65px;height:65px;object-fit:contain;background:white;border-radius:8px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.secondary{background:#42516a}.danger{background:#c0392b}small{color:#aab5c5}#storeForm,#couponForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 14px}#storeForm .full,#couponForm .full{grid-column:1/-1}a{color:#38d996;overflow-wrap:anywhere}.notice{margin:10px 0;overflow-wrap:anywhere}.coupon{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}.coupon h3{color:#38d996;margin-top:0}.sortbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:12px 0}.sortbar select{max-width:260px;margin:0}.featured{color:#fbbf24;font-weight:bold}.muted{color:#aab5c5;font-size:13px}@media(max-width:500px){header{padding:14px;align-items:flex-start}main{margin:15px auto}.panel{padding:15px}}
 </style>
 </head>
 <body>
@@ -72,6 +72,8 @@
 <div><label>Type</label><select id="couponType"><option value="code">Coupon Code</option><option value="deal">Deal (No Code)</option></select></div>
 <div><label>Coupon Code</label><input id="couponCode" placeholder="SAVE20"></div>
 <div><label>Discount</label><input id="couponDiscount" placeholder="20% OFF"></div>
+<div><label>Manual Sort Order (lower number = higher)</label><input id="couponSortOrder" type="number" value="0" step="1"></div>
+<div><label>Featured Deal</label><select id="couponFeatured"><option value="false">No</option><option value="true">Yes — Show First</option></select></div>
 <div><label>Start Date (optional)</label><input id="couponStart" type="date"></div>
 <div><label>Expiry Date (optional)</label><input id="couponEnd" type="date"></div>
 <div><label>Status</label><select id="couponStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
@@ -79,7 +81,7 @@
 <div class="full"><label>Description (optional)</label><textarea id="couponDescription" rows="3" placeholder="Coupon details and terms"></textarea></div>
 <div class="full actions"><button type="submit" id="saveCouponBtn">Save Coupon</button><button type="button" class="secondary" id="cancelCouponBtn">Cancel</button></div>
 </form></div>
-<div class="panel"><h2>All Coupons</h2><div id="couponList" class="grid">Open Coupons tab to load coupons.</div></div>
+<div class="panel"><h2>All Coupons</h2><div class="sortbar"><label for="couponSortView">Sort list:</label><select id="couponSortView"><option value="featured">Featured First</option><option value="discount">Highest Discount</option><option value="latest">Latest Deals</option><option value="manual">Manual Order</option></select></div><small>Manual Order ke liye Move Up / Move Down buttons use karein. Featured deals public website par pehle dikhengi.</small><div id="couponList" class="grid">Open Coupons tab to load coupons.</div></div>
 </section>
 
 <section id="otherSection" class="panel hidden"><h2 id="otherHeading">Coming Soon</h2><p id="otherText">This section will be connected after its database structure is checked.</p></section>
@@ -136,6 +138,8 @@ function renderStores(){
   if(s.aff_url){const a=addText(card,"a","Affiliate Link");a.href=s.aff_url;a.target="_blank";a.rel="noopener noreferrer";}
   addText(card,"p",s.description||"");const actions=document.createElement("div");actions.className="actions";
   const edit=document.createElement("button");edit.textContent="Edit";edit.onclick=()=>editStore(s);actions.appendChild(edit);
+  const up=document.createElement("button");up.textContent="Move Up";up.className="secondary";up.disabled=index===0;up.onclick=()=>moveCoupon(c.id,-1,ordered);actions.appendChild(up);
+  const down=document.createElement("button");down.textContent="Move Down";down.className="secondary";down.disabled=index===ordered.length-1;down.onclick=()=>moveCoupon(c.id,1,ordered);actions.appendChild(down);
   const del=document.createElement("button");del.textContent="Delete";del.className="danger";del.onclick=()=>deleteStore(s.id,s.name);actions.appendChild(del);card.appendChild(actions);list.appendChild(card);
  });
 }
@@ -167,7 +171,7 @@ $("couponForm").addEventListener("submit",async e=>{
  e.preventDefault();const id=$("couponEditId").value;
  const start=$("couponStart").value?new Date($("couponStart").value+"T00:00:00").toISOString():null;
  const end=$("couponEnd").value?new Date($("couponEnd").value+"T23:59:59").toISOString():null;
- const record={store_id:$("couponStoreId").value,title:$("couponTitle").value.trim(),coupon_type:$("couponType").value,code:$("couponCode").value.trim()||null,discount:$("couponDiscount").value.trim()||null,description:$("couponDescription").value.trim()||null,affiliate_url:$("couponUrl").value.trim()||null,start_date:start,end_date:end,status:$("couponStatus").value};
+ const record={store_id:$("couponStoreId").value,title:$("couponTitle").value.trim(),coupon_type:$("couponType").value,code:$("couponCode").value.trim()||null,discount:$("couponDiscount").value.trim()||null,is_featured:$("couponFeatured").value==="true",sort_order:Number($("couponSortOrder").value)||0,description:$("couponDescription").value.trim()||null,affiliate_url:$("couponUrl").value.trim()||null,start_date:start,end_date:end,status:$("couponStatus").value};
  $("saveCouponBtn").disabled=true;
  const result=id?await client.from("coupons").update(record).eq("id",id):await client.from("coupons").insert(record);
  $("saveCouponBtn").disabled=false;
@@ -176,34 +180,52 @@ $("couponForm").addEventListener("submit",async e=>{
 });
 async function loadCoupons(){
  $("couponList").textContent="Loading coupons...";
- const {data,error}=await client.from("coupons").select("id,store_id,title,coupon_type,code,discount,description,affiliate_url,start_date,end_date,status,created_at").order("created_at",{ascending:false});
+ const {data,error}=await client.from("coupons").select("id,store_id,title,coupon_type,code,discount,is_featured,sort_order,description,affiliate_url,start_date,end_date,status,created_at").order("created_at",{ascending:false});
  if(error){$("couponList").textContent="Could not load coupons: "+error.message;message("couponMessage","Coupons error: "+error.message);return;}
  coupons=data||[];renderCoupons();
 }
 function renderCoupons(){
  const list=$("couponList");list.replaceChildren();
  if(!coupons.length){addText(list,"p","No coupons added yet.");return;}
- coupons.forEach(c=>{
+ const mode=$("couponSortView")?.value||"featured";
+ const ordered=[...coupons].sort((a,b)=>{
+  if(mode==="discount")return discountNumber(b.discount)-discountNumber(a.discount);
+  if(mode==="latest")return new Date(b.created_at||0)-new Date(a.created_at||0);
+  if(mode==="manual")return (a.sort_order||0)-(b.sort_order||0)||new Date(b.created_at||0)-new Date(a.created_at||0);
+  return Number(!!b.is_featured)-Number(!!a.is_featured)||(a.sort_order||0)-(b.sort_order||0)||new Date(b.created_at||0)-new Date(a.created_at||0);
+ });
+ ordered.forEach((c,index)=>{
   const card=document.createElement("article");card.className="coupon";
   const store=stores.find(s=>s.id===c.store_id);addText(card,"h3",c.title);
   addText(card,"p","Store: "+(store?.name||"Store"));addText(card,"p","Discount: "+(c.discount||"Not set"));
   addText(card,"p","Type: "+(c.coupon_type==="code"?"Coupon Code":"Deal"));
   if(c.code)addText(card,"p","Code: "+c.code);
-  addText(card,"p","Status: "+c.status);
+  addText(card,"p","Status: "+c.status);if(c.is_featured)addText(card,"p","★ FEATURED","featured");addText(card,"p","Sort Order: "+(c.sort_order??0));
   if(c.end_date)addText(card,"p","Expiry: "+new Date(c.end_date).toLocaleDateString());
   if(c.description)addText(card,"p",c.description);
   const actions=document.createElement("div");actions.className="actions";
   const edit=document.createElement("button");edit.textContent="Edit";edit.onclick=()=>editCoupon(c);actions.appendChild(edit);
+  const up=document.createElement("button");up.textContent="Move Up";up.className="secondary";up.disabled=index===0;up.onclick=()=>moveCoupon(c.id,-1,ordered);actions.appendChild(up);
+  const down=document.createElement("button");down.textContent="Move Down";down.className="secondary";down.disabled=index===ordered.length-1;down.onclick=()=>moveCoupon(c.id,1,ordered);actions.appendChild(down);
   const del=document.createElement("button");del.textContent="Delete";del.className="danger";del.onclick=()=>deleteCoupon(c.id,c.title);actions.appendChild(del);
   card.appendChild(actions);list.appendChild(card);
  });
 }
 function editCoupon(c){
- $("couponEditId").value=c.id;$("couponStoreId").value=c.store_id;$("couponTitle").value=c.title||"";$("couponType").value=c.coupon_type||"code";$("couponCode").value=c.code||"";$("couponCode").disabled=c.coupon_type==="deal";$("couponDiscount").value=c.discount||"";
+ $("couponEditId").value=c.id;$("couponFeatured").value=String(!!c.is_featured);$("couponSortOrder").value=c.sort_order??0;$("couponStoreId").value=c.store_id;$("couponTitle").value=c.title||"";$("couponType").value=c.coupon_type||"code";$("couponCode").value=c.code||"";$("couponCode").disabled=c.coupon_type==="deal";$("couponDiscount").value=c.discount||"";
  $("couponDescription").value=c.description||"";$("couponUrl").value=c.affiliate_url||"";$("couponStatus").value=c.status||"active";
  $("couponStart").value=c.start_date?new Date(c.start_date).toISOString().slice(0,10):"";$("couponEnd").value=c.end_date?new Date(c.end_date).toISOString().slice(0,10):"";
  $("couponFormHeading").textContent="Edit Coupon";$("saveCouponBtn").textContent="Update Coupon";$("couponFormPanel").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"});
 }
+function discountNumber(value){const m=String(value||"").match(/[0-9]+(?:\.[0-9]+)?/);return m?Number(m[0]):0;}
+async function moveCoupon(id,direction,ordered){
+ const next=[...ordered],index=next.findIndex(x=>x.id===id),target=index+direction;if(target<0||target>=next.length)return;
+ [next[index],next[target]]=[next[target],next[index]];
+ const updates=await Promise.all(next.map((item,i)=>client.from("coupons").update({sort_order:(i+1)*10}).eq("id",item.id)));
+ const err=updates.find(x=>x.error)?.error;if(err){message("couponMessage","Sorting error: "+err.message);return;}
+ await loadCoupons();message("couponMessage","Deal order updated.",true);
+}
+$("couponSortView").addEventListener("change",renderCoupons);
 async function deleteCoupon(id,title){if(!confirm("Delete "+(title||"this coupon")+"? This cannot be undone."))return;const {error}=await client.from("coupons").delete().eq("id",id);if(error){message("couponMessage","Delete error: "+error.message);return;}message("couponMessage","Coupon deleted.",true);await loadCoupons();}
 
 const sections=["stores","coupons","categories","campaigns","analytics"];
