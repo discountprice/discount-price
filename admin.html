@@ -205,7 +205,6 @@ function renderCoupons(){
   if(c.description)addText(card,"p",c.description);
   const actions=document.createElement("div");actions.className="actions";
   const edit=document.createElement("button");edit.textContent="Edit";edit.onclick=()=>editCoupon(c);actions.appendChild(edit);
-  const up=document.createElement("button");up.textContent="Move Up";up.className="secondary";up.disabled=index===0;up.onclick=()=>moveCoupon(c.id,-1,ordered);actions.appendChild(up);
   const del=document.createElement("button");del.textContent="Delete";del.className="danger";del.onclick=()=>deleteCoupon(c.id,c.title);actions.appendChild(del);
   card.appendChild(actions);list.appendChild(card);
  });
