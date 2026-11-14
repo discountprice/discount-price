@@ -1,0 +1,402 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discount Price Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:#fff;font-family:Arial,sans-serif}
+.hidden{display:none!important}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:7px;padding:12px 16px;background:#16a875;color:white;font-weight:bold}
+button:disabled{opacity:.5}
+input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;background:#101827;color:white;border:1px solid #42516a;border-radius:7px}
+label{display:block;color:#cbd5e1;font-size:14px}
+.login{max-width:400px;margin:70px auto;background:#1c293b;padding:30px;border-radius:14px}
+h1,h2{color:#38d996}
+.login h1{text-align:center}
+.login p{text-align:center;color:#aab5c5}
+#message{margin-top:15px;overflow-wrap:anywhere}
+header{background:#1c293b;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+header h2{margin:0}
+main{max-width:1100px;margin:25px auto;padding:0 16px}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.tabs button{background:#29384d}
+.tabs button.active{background:#16a875}
+.panel{background:#1c293b;padding:22px;border-radius:12px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.store{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}
+.store h3{color:#38d996;margin-top:0}
+.store img{width:65px;height:65px;object-fit:contain;background:white;border-radius:8px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.secondary{background:#42516a}
+.danger{background:#c0392b}
+small{color:#aab5c5}
+#storeForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 14px}
+#storeForm .full{grid-column:1/-1}
+a{color:#38d996;overflow-wrap:anywhere}
+@media(max-width:500px){header{padding:14px;align-items:flex-start}main{margin:15px auto}.panel{padding:15px}}
+</style>
+</head>
+<body>
+
+<section id="loginPage" class="login">
+<h1>Discount Price</h1>
+<p>Admin Portal Login</p>
+<form id="loginForm">
+<label>Admin Email</label>
+<input type="email" id="email" required placeholder="Admin email">
+<label>Password</label>
+<input type="password" id="password" required placeholder="Password">
+<button type="submit" style="width:100%">Login to Dashboard</button>
+</form>
+<button id="forgotBtn" class="secondary" style="width:100%;margin-top:12px">Forgot Password?</button>
+<div id="loginMessage"></div>
+</section>
+
+<section id="resetPage" class="login hidden">
+<h1>New Password</h1>
+<form id="resetForm">
+<label>New Password</label>
+<input type="password" id="newPassword" minlength="8" required>
+<label>Confirm Password</label>
+<input type="password" id="confirmPassword" minlength="8" required>
+<button style="width:100%">Save Password</button>
+</form>
+<div id="resetMessage"></div>
+</section>
+
+<section id="dashboard" class="hidden">
+<header>
+<h2>Discount Price Admin</h2>
+<button id="logoutBtn" class="danger">Logout</button>
+</header>
+<main>
+<div class="tabs">
+<button class="active" id="storesTab">Stores</button>
+<button id="couponsTab" class="secondary">Coupons</button>
+<button id="categoriesTab" class="secondary">Categories</button>
+<button id="campaignsTab" class="secondary">Promo Campaigns</button>
+<button id="analyticsTab" class="secondary">Analytics</button>
+</div>
+
+<section id="storesSection">
+<div class="panel">
+<h2>Store Management</h2>
+<p><small>Add and manage your affiliate stores.</small></p>
+<button id="addStoreBtn">+ Add New Store</button>
+<input id="searchStore" placeholder="Search stores...">
+<div id="storeMessage"></div>
+</div>
+
+<div class="panel hidden" id="formPanel">
+<h2 id="formHeading">Add New Store</h2>
+<form id="storeForm">
+<input type="hidden" id="editId">
+<div><label>Store Name *</label><input id="storeName" required placeholder="Example: Nike"></div>
+<div><label>Website URL</label><input id="webUrl" type="url" placeholder="https://example.com"></div>
+<div><label>Affiliate URL</label><input id="affUrl" type="url" placeholder="https://affiliate-link.com"></div>
+<div><label>Logo URL</label><input id="logoUrl" type="url" placeholder="https://example.com/logo.png"></div>
+<div><label>Country</label><input id="country" placeholder="Pakistan, UK, Germany..."></div>
+<div>
+  <label>Category</label>
+  <select id="categoryId">
+    <option value="">Select Category</option>
+  </select>
+</div><div><label>Slug</label><input id="slug" placeholder="nike"></div>
+<div><label>Status</label>
+<select id="status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+<div class="full"><label>Description</label><textarea id="description" rows="3" placeholder="Store description"></textarea></div>
+<div class="full actions">
+<button type="submit" id="saveStoreBtn">Save Store</button>
+<button type="button" class="secondary" id="cancelStoreBtn">Cancel</button>
+</div>
+</form>
+</div>
+
+<div class="panel">
+<h2>All Stores</h2>
+<div id="storeList" class="grid">Loading stores...</div>
+</div>
+</section>
+
+<section id="otherSection" class="panel hidden">
+<h2 id="otherHeading">Coming Soon</h2>
+<p id="otherText">This section will be connected after its database structure is checked.</p>
+</section>
+</main>
+</section>
+
+<script>
+const client = window.supabase.createClient(
+  "https://eyaukiovgugmiyytybdg.supabase.co",
+  "sb_publishable_qahiC18UeUqc6qVosbenCw_zKmQ7vb1"
+);
+
+const $ = id => document.getElementById(id);
+let stores = [];
+
+function message(id,text,ok=false){
+  $(id).textContent=text;
+  $(id).style.color=ok?"#38d996":"#ff7777";
+}
+async function loadCategories(){
+  const {data,error}=await client
+    .from("categories")
+    .select("id,name,category_type")
+    .eq("is_active",true)
+    .order("name");
+
+  if(error){
+    alert("Categories error: "+error.message);
+    return;
+  }
+
+  const dropdown=$("categoryId");
+  dropdown.innerHTML='<option value="">Select Category</option>';
+
+  (data||[]).forEach(category=>{
+    const option=document.createElement("option");
+    option.value=category.id;
+    option.textContent=category.category_type.toUpperCase()+" - "+category.name;
+    dropdown.appendChild(option);
+  });
+}function showDashboard(){
+  $("loginPage").classList.add("hidden");
+  $("resetPage").classList.add("hidden");
+  $("dashboard").classList.remove("hidden");
+loadCategories();
+loadStores();}
+function showLogin(){
+  $("dashboard").classList.add("hidden");
+  $("resetPage").classList.add("hidden");
+  $("loginPage").classList.remove("hidden");
+}
+
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const {error}=await client.auth.signInWithPassword({
+    email:$("email").value.trim(),
+    password:$("password").value
+  });
+  if(error){message("loginMessage",error.message);return;}
+  message("loginMessage","Login successful!",true);
+  showDashboard();
+});
+
+$("forgotBtn").onclick=async()=>{
+  const email=$("email").value.trim();
+  if(!email){message("loginMessage","Pehle Admin Email enter karein.");return;}
+  const {error}=await client.auth.resetPasswordForEmail(email,{
+    redirectTo:"https://discountprice.github.io/discount-price/"
+  });
+  message("loginMessage",error?error.message:"Recovery email sent. Inbox check karein.",!error);
+};
+
+client.auth.onAuthStateChange((event,session)=>{
+  if(event==="PASSWORD_RECOVERY" && session){
+    $("loginPage").classList.add("hidden");
+    $("resetPage").classList.remove("hidden");
+  }
+});
+
+$("resetForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const p=$("newPassword").value;
+  if(p!==$("confirmPassword").value){message("resetMessage","Passwords match nahi karte.");return;}
+  const {error}=await client.auth.updateUser({password:p});
+  if(error){message("resetMessage",error.message);return;}
+  await client.auth.signOut();
+  message("resetMessage","Password updated. Ab login karein.",true);
+  showLogin();
+});
+
+$("logoutBtn").onclick=async()=>{
+  await client.auth.signOut();
+  stores=[];
+  showLogin();
+};
+
+function makeSlug(value){
+  return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+}
+$("storeName").addEventListener("input",()=>{
+  if(!$("editId").value) $("slug").value=makeSlug($("storeName").value);
+});
+
+function resetStoreForm(){
+  $("storeForm").reset();
+  $("editId").value="";
+  $("formHeading").textContent="Add New Store";
+  $("saveStoreBtn").textContent="Save Store";
+  $("formPanel").classList.add("hidden");
+}
+
+$("addStoreBtn").onclick=()=>{
+  resetStoreForm();
+  $("formPanel").classList.remove("hidden");
+  $("formHeading").textContent="Add New Store";
+};
+$("cancelStoreBtn").onclick=resetStoreForm;
+
+$("storeForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const id=$("editId").value;
+  const record={
+    name:$("storeName").value.trim(),
+    slug:$("slug").value.trim() || makeSlug($("storeName").value),
+    web_url:$("webUrl").value.trim() || null,
+    aff_url:$("affUrl").value.trim() || null,
+    logo_url:$("logoUrl").value.trim() || null,
+    description:$("description").value.trim() || null,
+    country:$("country").value.trim() || null,
+    category_id:$("categoryId").value.trim() || null,
+    status:$("status").value
+  };
+
+  $("saveStoreBtn").disabled=true;
+  const result=id
+    ? await client.from("stores").update(record).eq("id",id)
+    : await client.from("stores").insert(record);
+
+  $("saveStoreBtn").disabled=false;
+  if(result.error){
+    message("storeMessage","Error: "+result.error.message);
+    return;
+  }
+  message("storeMessage",id?"Store updated successfully!":"Store added successfully!",true);
+  resetStoreForm();
+  await loadStores();
+});
+
+function addText(parent,tag,text,className){
+  const el=document.createElement(tag);
+  el.textContent=text??"";
+  if(className)el.className=className;
+  parent.appendChild(el);
+  return el;
+}
+
+function renderStores(){
+  const list=$("storeList");
+  list.replaceChildren();
+  const term=$("searchStore").value.toLowerCase();
+  const filtered=stores.filter(s=>
+    (s.name||"").toLowerCase().includes(term) ||
+    (s.country||"").toLowerCase().includes(term)
+  );
+  if(!filtered.length){
+    addText(list,"p","No stores found.");
+    return;
+  }
+
+  filtered.forEach(s=>{
+    const card=document.createElement("article");
+    card.className="store";
+    if(s.logo_url){
+      const img=document.createElement("img");
+      img.src=s.logo_url;
+      img.alt=(s.name||"")+" logo";
+      img.onerror=()=>img.remove();
+      card.appendChild(img);
+    }
+    addText(card,"h3",s.name||"Unnamed Store");
+    addText(card,"p","Country: "+(s.country||"Not set"));
+    addText(card,"p","Status: "+(s.status||"Not set"));
+    if(s.web_url){
+      const a=addText(card,"a","Visit Website");
+      a.href=s.web_url;a.target="_blank";a.rel="noopener noreferrer";
+    }
+    if(s.aff_url){
+      const a=addText(card,"a","Affiliate Link");
+      a.href=s.aff_url;a.target="_blank";a.rel="noopener noreferrer";
+    }
+    addText(card,"p",s.description||"");
+    const actions=document.createElement("div");
+    actions.className="actions";
+    const edit=document.createElement("button");
+    edit.textContent="Edit";
+    edit.onclick=()=>editStore(s);
+    actions.appendChild(edit);
+    const del=document.createElement("button");
+    del.textContent="Delete";
+    del.className="danger";
+    del.onclick=()=>deleteStore(s.id,s.name);
+    actions.appendChild(del);
+    card.appendChild(actions);
+    list.appendChild(card);
+  });
+}
+
+async function loadStores(){
+  $("storeList").textContent="Loading stores...";
+  const {data,error}=await client.from("stores")
+    .select("id,name,slug,category_id,web_url,logo_url,description,aff_url,country,status,created_at")
+    .order("created_at",{ascending:false});
+  if(error){
+    $("storeList").textContent="Could not load stores: "+error.message;
+    return;
+  }
+  stores=data||[];
+  renderStores();
+}
+
+function editStore(s){
+  $("editId").value=s.id;
+  $("storeName").value=s.name||"";
+  $("slug").value=s.slug||"";
+  $("webUrl").value=s.web_url||"";
+  $("affUrl").value=s.aff_url||"";
+  $("logoUrl").value=s.logo_url||"";
+  $("description").value=s.description||"";
+  $("country").value=s.country||"";
+  $("categoryId").value=s.category_id||"";
+  $("status").value=s.status||"active";
+  $("formHeading").textContent="Edit Store";
+  $("saveStoreBtn").textContent="Update Store";
+  $("formPanel").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function deleteStore(id,name){
+  if(!confirm("Delete "+(name||"this store")+"? This cannot be undone."))return;
+  const {error}=await client.from("stores").delete().eq("id",id);
+  if(error){message("storeMessage","Delete error: "+error.message);return;}
+  message("storeMessage","Store deleted.",true);
+  await loadStores();
+}
+
+$("searchStore").addEventListener("input",renderStores);
+
+const sections=["stores","coupons","categories","campaigns","analytics"];
+const headings={
+  stores:"Stores",
+  coupons:"Coupons",
+  categories:"Categories",
+  campaigns:"Promo Campaigns",
+  analytics:"Analytics"
+};
+sections.forEach(key=>{
+  const btn=$(key+"Tab");
+  btn.onclick=()=>{
+    sections.forEach(k=>$(k+"Tab").className=k===key?"active":"secondary");
+    $("storesSection").classList.toggle("hidden",key!=="stores");
+    $("otherSection").classList.toggle("hidden",key==="stores");
+    $("otherHeading").textContent=headings[key];
+    $("otherText").textContent=key==="analytics"
+      ?"Analytics will be connected after click tracking is configured."
+      :"This section will be connected after its database columns and security are checked.";
+  };
+});
+
+client.auth.getSession().then(({data,error})=>{
+  if(error){showLogin();return;}
+  if(data.session)showDashboard();
+  else showLogin();
+});
+</script>
+</body>
+</html>
