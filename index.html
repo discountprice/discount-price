@@ -143,12 +143,33 @@ function message(id,text,ok=false){
   $(id).textContent=text;
   $(id).style.color=ok?"#38d996":"#ff7777";
 }
-function showDashboard(){
+async function loadCategories(){
+  const {data,error}=await client
+    .from("categories")
+    .select("id,name,category_type")
+    .eq("is_active",true)
+    .order("name");
+
+  if(error){
+    alert("Categories error: "+error.message);
+    return;
+  }
+
+  const dropdown=$("categoryId");
+  dropdown.innerHTML='<option value="">Select Category</option>';
+
+  (data||[]).forEach(category=>{
+    const option=document.createElement("option");
+    option.value=category.id;
+    option.textContent=category.category_type.toUpperCase()+" - "+category.name;
+    dropdown.appendChild(option);
+  });
+}function showDashboard(){
   $("loginPage").classList.add("hidden");
   $("resetPage").classList.add("hidden");
   $("dashboard").classList.remove("hidden");
-  loadStores();
-}
+loadCategories();
+loadStores();}
 function showLogin(){
   $("dashboard").classList.add("hidden");
   $("resetPage").classList.add("hidden");
