@@ -101,8 +101,12 @@ a{color:#38d996;overflow-wrap:anywhere}
 <div><label>Affiliate URL</label><input id="affUrl" type="url" placeholder="https://affiliate-link.com"></div>
 <div><label>Logo URL</label><input id="logoUrl" type="url" placeholder="https://example.com/logo.png"></div>
 <div><label>Country</label><input id="country" placeholder="Pakistan, UK, Germany..."></div>
-<div><label>Category ID</label><input id="categoryId" placeholder="Optional category ID"></div>
-<div><label>Slug</label><input id="slug" placeholder="nike"></div>
+<div>
+  <label>Category</label>
+  <select id="categoryId">
+    <option value="">Select Category</option>
+  </select>
+</div><div><label>Slug</label><input id="slug" placeholder="nike"></div>
 <div><label>Status</label>
 <select id="status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
 <div class="full"><label>Description</label><textarea id="description" rows="3" placeholder="Store description"></textarea></div>
