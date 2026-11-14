@@ -138,8 +138,7 @@ function renderStores(){
   if(s.aff_url){const a=addText(card,"a","Affiliate Link");a.href=s.aff_url;a.target="_blank";a.rel="noopener noreferrer";}
   addText(card,"p",s.description||"");const actions=document.createElement("div");actions.className="actions";
   const edit=document.createElement("button");edit.textContent="Edit";edit.onclick=()=>editStore(s);actions.appendChild(edit);
-  const up=document.createElement("button");up.textContent="Move Up";up.className="secondary";up.disabled=index===0;up.onclick=()=>moveCoupon(c.id,-1,ordered);actions.appendChild(up);
-  const down=document.createElement("button");down.textContent="Move Down";down.className="secondary";down.disabled=index===ordered.length-1;down.onclick=()=>moveCoupon(c.id,1,ordered);actions.appendChild(down);
+  
   const del=document.createElement("button");del.textContent="Delete";del.className="danger";del.onclick=()=>deleteStore(s.id,s.name);actions.appendChild(del);card.appendChild(actions);list.appendChild(card);
  });
 }
