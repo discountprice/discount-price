@@ -7,115 +7,86 @@
 <title>Discount Price — Deals, Coupons & Offers</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{
-  --red:#d50404;--red-dark:#ad0000;--red-soft:#fff0f0;--ink:#202124;
-  --muted:#6b7280;--line:#ececec;--surface:#fff;--page:#f7f7f8;
-  --yellow:#ffcc00;--shadow:0 5px 22px rgba(0,0,0,.07)
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--page);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
-a{color:inherit;text-decoration:none}
-button,input{font:inherit}
-button{cursor:pointer}
-.container{width:min(1180px,calc(100% - 32px));margin:auto}
-.topbar{background:#171717;color:#fff;font-size:13px;padding:9px 0;text-align:center}
-.header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-.header-inner{height:76px;display:flex;align-items:center;gap:28px}
-.logo{font-size:27px;font-weight:900;letter-spacing:-1.2px;color:var(--red);white-space:nowrap}
-.logo span{color:#202124}
-.search-wrap{display:flex;flex:1;max-width:620px;border:1px solid #ddd;border-radius:7px;overflow:hidden;background:#fff}
-.search-wrap input{border:0;outline:0;padding:13px 15px;min-width:0;flex:1}
-.search-wrap button{border:0;background:var(--red);color:#fff;padding:0 22px;font-weight:700}
-.header-link{font-size:14px;font-weight:700;white-space:nowrap}
-.header-link:hover{color:var(--red)}
-.mobile-search{display:none}
-.nav{background:#fff;border-bottom:1px solid var(--line)}
-.nav-inner{display:flex;align-items:center;gap:26px;min-height:44px;overflow:auto;white-space:nowrap}
-.nav a{font-size:13px;font-weight:700;color:#444;padding:14px 0}
-.nav a:hover{color:var(--red)}
-.hero{background:linear-gradient(110deg,#c90000,#ed1717 58%,#ff4545);color:#fff;padding:48px 0 42px}
-.hero-inner{display:grid;grid-template-columns:1.35fr .65fr;align-items:center;gap:30px}
-.hero h1{font-size:clamp(30px,4vw,46px);line-height:1.08;margin:0 0 13px;font-weight:900;letter-spacing:-1px}
-.hero p{font-size:16px;line-height:1.6;margin:0 0 23px;color:#ffe6e6;max-width:590px}
-.hero-btn{display:inline-block;background:#fff;color:var(--red);font-weight:800;padding:13px 22px;border-radius:6px}
-.hero-art{justify-self:end;background:#fff;color:var(--red);border-radius:18px;padding:22px 26px;transform:rotate(3deg);box-shadow:0 12px 28px #8d000055;text-align:center}
-.hero-art strong{display:block;font-size:38px;line-height:1.1}
-.hero-art span{font-size:13px;color:#555;font-weight:700}
-main{padding:28px 0 55px}
-.section{margin-bottom:35px}
-.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:16px}
-.section-head h2{font-size:23px;margin:0;font-weight:900}
-.section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
-.text-link{font-size:13px;color:var(--red);font-weight:800}
-.category-row{display:flex;gap:10px;overflow:auto;padding:2px 1px 8px}
-.category-chip{border:1px solid #eee;background:#fff;border-radius:30px;padding:10px 17px;font-size:13px;font-weight:700;white-space:nowrap}
+
+:root{--red:#e00000;--red-dark:#b90000;--pink:#fff4f5;--ink:#171717;--muted:#666;--line:#e7dfe0;--page:#fff;--shadow:0 2px 7px rgba(0,0,0,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:13px}
+a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}
+.container{width:min(1000px,calc(100% - 28px));margin:auto}
+.topbar{height:14px;background:#503746}
+.header{background:#fff5f6;border-bottom:1px solid #f0e5e7;position:sticky;top:0;z-index:20}
+.header-inner{height:40px;display:flex;align-items:center;gap:24px}
+.logo{font-size:18px;font-weight:900;color:var(--red);white-space:nowrap;letter-spacing:-.6px}.logo span{color:#252525}
+.search-wrap{display:flex;align-items:center;max-width:250px;border:1px solid #d9d9df;border-radius:18px;overflow:hidden;background:#fff;margin-left:auto;height:27px}
+.search-wrap input{border:0;outline:0;padding:5px 12px;min-width:0;width:190px;font-size:11px}
+.search-wrap button{border:0;background:transparent;color:#333;padding:0 10px;font-size:11px}
+.header-link{font-size:10px;font-weight:700;white-space:nowrap}.header-link:hover,.nav a:hover{color:var(--red)}
+.mobile-search{display:none}.nav{background:#fff;border-bottom:1px solid #eee}
+.nav-inner{display:flex;align-items:center;gap:23px;min-height:29px;overflow:auto;white-space:nowrap}
+.nav a{font-size:10px;font-weight:700;color:#333;padding:8px 0}
+.hero{background:linear-gradient(110deg,#fff5f6,#fff);color:#222;padding:17px 0 7px}
+.hero-inner{display:block}.hero h1{font-size:23px;line-height:1.15;margin:0 0 7px;font-weight:900}.hero p{font-size:12px;line-height:1.5;margin:0 0 10px;color:#555}.hero-btn{display:inline-block;background:var(--red);color:#fff;font-weight:800;padding:8px 15px;border-radius:20px;font-size:11px}.hero-art{display:none}
+main{padding:12px 0 45px}
+.content-layout{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:18px;align-items:start}
+.main-column{min-width:0}.side-column{min-width:0;padding-top:4px}
+.section{margin-bottom:23px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:12px}
+.section-head h2{font-size:17px;margin:0;font-weight:900}.section-head p{margin:4px 0 0;color:var(--muted);font-size:11px}
+.text-link{font-size:11px;color:var(--red);font-weight:800}
+.category-row{display:flex;gap:8px;overflow:auto;padding:2px 1px 7px}
+.category-chip{border:1px solid #eee;background:#fff;border-radius:18px;padding:7px 12px;font-size:11px;font-weight:700;white-space:nowrap}
 .category-chip:hover,.category-chip.active{background:var(--red);border-color:var(--red);color:#fff}
-.store-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
-.store-card{background:#fff;border:1px solid var(--line);border-radius:9px;padding:16px 12px;text-align:center;transition:.18s;min-width:0}
-.store-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#ffd0d0}
-.store-logo{height:74px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-.store-logo img{max-width:100%;max-height:68px;object-fit:contain}
-.store-logo .letter-logo{width:65px;height:65px;border-radius:50%;display:grid;place-items:center;background:var(--red-soft);color:var(--red);font-size:25px;font-weight:900}
-.store-card h3{font-size:14px;margin:0 0 7px;overflow-wrap:anywhere}
-.store-count{font-size:12px;color:var(--muted);margin-bottom:12px}
-.small-red-btn{display:inline-block;background:var(--red-soft);color:var(--red);font-size:12px;font-weight:800;padding:8px 12px;border-radius:5px}
-.small-red-btn:hover{background:var(--red);color:#fff}
-.deal-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.deal-card{background:#fff;border:1px solid var(--line);border-radius:9px;padding:18px;display:flex;gap:15px;min-width:0;box-shadow:0 2px 8px rgba(0,0,0,.025)}
-.deal-logo{width:76px;height:76px;flex:0 0 76px;border:1px solid #eee;border-radius:7px;display:grid;place-items:center;overflow:hidden;background:#fff}
-.deal-logo img{max-width:100%;max-height:100%;object-fit:contain}
-.deal-logo .letter-logo{font-size:24px;font-weight:900;color:var(--red)}
-.deal-content{min-width:0;flex:1}
-.deal-store{font-size:12px;color:var(--red);font-weight:800;margin-bottom:6px}
-.deal-card h3{font-size:15px;line-height:1.4;margin:0 0 9px}
-.deal-desc{font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 12px}
-.deal-actions{display:flex;gap:8px;flex-wrap:wrap}
-.claim-btn,.code-btn{border:0;border-radius:5px;padding:10px 13px;font-size:12px;font-weight:800}
-.claim-btn{background:var(--red);color:#fff}
-.claim-btn:hover{background:var(--red-dark)}
-.code-btn{background:#fff;border:1px dashed var(--red);color:var(--red)}
-.pill{display:inline-block;background:#fff1d0;color:#8b5c00;border-radius:3px;padding:4px 7px;font-size:10px;font-weight:800;margin-bottom:7px}
-.empty{background:#fff;border:1px dashed #ddd;border-radius:9px;padding:30px;text-align:center;color:var(--muted);grid-column:1/-1}
-.store-page-head{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px;display:flex;align-items:center;gap:18px;margin-bottom:24px}
-.store-page-head .store-logo{width:100px;flex:0 0 100px;margin:0}
-.store-page-head h1{font-size:25px;margin:0 0 7px}
-.store-page-head p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
-.back-link{display:inline-block;color:var(--red);font-weight:800;font-size:13px;margin-bottom:15px}
-.newsletter{background:linear-gradient(100deg,#171717,#b90000);color:#fff;border-radius:10px;padding:28px;display:flex;align-items:center;justify-content:space-between;gap:22px}
-.newsletter h2{font-size:22px;margin:0 0 7px}
-.newsletter p{font-size:13px;color:#f4dede;margin:0}
-.newsletter-form{display:flex;gap:8px;max-width:410px;width:100%}
-.newsletter-form input{flex:1;min-width:0;padding:12px;border:0;border-radius:5px;outline:0}
-.newsletter-form button{border:0;border-radius:5px;padding:0 16px;background:var(--yellow);font-weight:900;color:#222}
-footer{background:#171717;color:#ddd;padding:35px 0 22px}
-.footer-inner{display:flex;justify-content:space-between;gap:25px;flex-wrap:wrap}
-footer .logo{margin-bottom:10px}
-footer p{font-size:13px;color:#aaa;line-height:1.6;max-width:420px}
-.footer-links{display:flex;gap:18px;flex-wrap:wrap;font-size:13px}
-.footer-links a:hover{color:#fff}
-.copyright{border-top:1px solid #333;margin-top:25px;padding-top:18px;font-size:12px;color:#888}
-.status{font-size:12px;color:var(--muted);margin-top:10px}
-.hidden{display:none!important}
-.loading{padding:35px;text-align:center;color:var(--muted);grid-column:1/-1}
-@media(max-width:900px){.store-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.hero-inner{grid-template-columns:1fr .45fr}.hero-art{padding:18px}.hero-art strong{font-size:30px}}
+.store-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.store-card{background:#fff;border:1px solid var(--line);border-radius:7px;padding:11px 8px;text-align:center;min-width:0;box-shadow:0 2px 5px rgba(0,0,0,.04)}
+.store-card:hover{box-shadow:var(--shadow);border-color:#f2bfc4}
+.store-logo{height:55px;display:flex;align-items:center;justify-content:center;margin-bottom:7px}
+.store-logo img{max-width:100%;max-height:50px;object-fit:contain}.store-logo .letter-logo{width:49px;height:49px;border-radius:6px;display:grid;place-items:center;background:#fff;color:#111;border:1px solid #ddd;font-size:21px;font-weight:900}
+.store-card h3{font-size:12px;margin:0 0 5px;overflow-wrap:anywhere}.store-count{font-size:10px;color:var(--muted);margin-bottom:8px}
+.small-red-btn{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:6px 11px;border-radius:16px}
+.deal-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.deal-card{background:#fff5f6;border:1px solid #f2e5e6;border-radius:7px;padding:10px 9px 8px;display:flex;flex-direction:column;gap:6px;min-width:0;min-height:145px;box-shadow:0 2px 5px rgba(0,0,0,.07)}
+.deal-logo{height:25px;display:flex;align-items:center;justify-content:flex-end;order:0;min-width:0}
+.deal-logo img{max-width:75px;max-height:24px;object-fit:contain}.deal-logo .letter-logo{font-size:17px;font-weight:900;color:#111}
+.deal-content{min-width:0;display:flex;flex-direction:column;flex:1}
+.deal-store{font-size:9px;color:#555;font-weight:700;order:-1;margin:0 0 4px}
+.deal-card h3{font-size:11px;line-height:1.35;margin:0 0 5px;min-height:27px}
+.deal-desc{font-size:9px;color:#444;line-height:1.4;margin:0 0 8px}
+.deal-actions{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:auto}
+.claim-btn,.code-btn{border:0;border-radius:16px;padding:6px 12px;font-size:9px;font-weight:800}
+.claim-btn{background:var(--red);color:#fff;text-align:center;min-width:68px}.claim-btn:hover{background:var(--red-dark)}
+.code-btn{background:#fff;border:1px dashed #c99;color:#222}
+.pill{display:inline-block;background:#fff;color:#333;border-radius:3px;padding:3px 5px;font-size:9px;font-weight:800;margin-bottom:4px}
+.empty{background:#fff;border:1px dashed #ddd;border-radius:7px;padding:25px;text-align:center;color:var(--muted);grid-column:1/-1}
+.store-page-head{background:#fff;border-radius:8px;padding:7px 0 18px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;border-bottom:1px solid #eee}
+.store-page-head .store-logo{width:103px;height:65px;flex:0 0 103px;margin:0;border:1px solid #ddd;border-radius:7px}
+.store-page-head h1{font-size:20px;margin:0 0 7px}.store-page-head p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+.back-link{display:inline-block;color:var(--red);font-weight:800;font-size:11px;margin-bottom:10px}
+.side-box{background:#fff5f6;border:1px solid #f0dfe2;border-radius:8px;padding:11px;margin-bottom:10px;font-size:10px;line-height:1.5}
+.side-box h3{font-size:12px;margin:0 0 7px}.side-box p{margin:4px 0;color:#333}
+.side-box .submit-btn{display:block;background:var(--red);color:#fff;border-radius:18px;padding:7px 12px;text-align:center;font-weight:800;width:max-content;margin:8px auto}
+.side-social{color:var(--red);font-size:15px;text-align:center;font-weight:900;letter-spacing:4px;margin:8px 0}
+.author{display:flex;align-items:center;gap:8px;margin-bottom:7px}.author-avatar{width:31px;height:31px;border-radius:50%;background:#ddd;display:grid;place-items:center;font-weight:900;color:#555}
+.newsletter{background:#fff5f6;border:1px solid #f0dfe2;color:#222;border-radius:8px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.newsletter h2{font-size:16px;margin:0 0 5px}.newsletter p{font-size:11px;color:#555;margin:0}
+.newsletter-form{display:flex;gap:5px;max-width:300px;width:100%}.newsletter-form input{flex:1;min-width:0;padding:9px;border:1px solid #ddd;border-radius:5px}.newsletter-form button{border:0;border-radius:5px;padding:0 12px;background:var(--red);color:#fff;font-weight:800}
+footer{background:#30252b;color:#ddd;padding:25px 0 18px} .footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer .logo{margin-bottom:7px}footer p{font-size:11px;color:#ccc;line-height:1.6;max-width:350px}
+.footer-links{display:flex;gap:14px;flex-wrap:wrap;font-size:11px}.footer-links a:hover{color:#fff}
+.copyright{border-top:1px solid #51454b;margin-top:18px;padding-top:12px;font-size:10px;color:#aaa}
+.status{font-size:11px;color:var(--muted);margin-top:8px}.hidden{display:none!important}.loading{padding:25px;text-align:center;color:var(--muted);grid-column:1/-1}
+@media(max-width:850px){.container{width:min(100% - 24px,1000px)}.content-layout{grid-template-columns:minmax(0,1fr) 190px;gap:12px}.store-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){
- .container{width:min(100% - 24px,1180px)}
- .topbar{font-size:11px}.header-inner{height:64px;gap:12px}.logo{font-size:23px}
- .header-link{display:none}.search-wrap{display:none}.mobile-search{display:flex;padding:0 0 12px}
- .nav-inner{gap:19px;min-height:40px}.nav a{padding:12px 0;font-size:12px}
- .hero{padding:34px 0}.hero-inner{grid-template-columns:1fr}.hero h1{font-size:32px}.hero p{font-size:14px}.hero-art{display:none}
- main{padding-top:22px}.section-head h2{font-size:20px}
- .store-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
- .store-card{padding:13px 8px}.store-logo{height:62px}.store-logo img{max-height:58px}
- .deal-list{grid-template-columns:1fr}.deal-card{padding:14px;gap:11px}.deal-logo{width:62px;height:62px;flex-basis:62px}
- .newsletter{display:block;padding:22px}.newsletter-form{margin-top:16px}
- .store-page-head{align-items:flex-start;padding:15px}.store-page-head .store-logo{width:70px;flex-basis:70px;height:65px}.store-page-head h1{font-size:20px}
+ .header-inner{height:54px;gap:12px}.logo{font-size:20px}.header-link{display:none}.search-wrap{display:none}.mobile-search{display:flex;padding:0 0 9px}.mobile-search .search-wrap{display:flex;max-width:none;width:100%;margin:0}
+ .nav-inner{gap:16px;min-height:34px}.nav a{font-size:10px}.hero{padding:18px 0}.hero h1{font-size:23px}
+ main{padding-top:14px}.content-layout{grid-template-columns:1fr}.side-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.side-box{margin:0}.store-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .deal-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.deal-card{min-height:150px;padding:9px 8px}.deal-card h3{font-size:10px}
+ .store-page-head{gap:10px}.store-page-head .store-logo{width:78px;flex-basis:78px;height:58px}.store-page-head h1{font-size:17px}
+ .newsletter{display:block;padding:15px}.newsletter-form{margin-top:12px}.side-column .side-box:last-child{grid-column:1/-1}
 }
+@media(max-width:390px){.deal-list{grid-template-columns:1fr}.side-column{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
-<div class="topbar">Discover the latest deals, promo codes and savings</div>
+<div class="topbar"></div>
 <header class="header">
   <div class="container header-inner">
     <a class="logo" href="./">Discount<span>Price</span></a>
@@ -143,24 +114,34 @@ footer p{font-size:13px;color:#aaa;line-height:1.6;max-width:420px}
  </div>
 </section>
 <main class="container">
- <section id="storeProfile" class="hidden"></section>
- <section class="section" id="categorySection">
-  <div class="section-head"><div><h2>Shop By Category</h2><p>Find offers from the categories you love</p></div></div>
-  <div class="category-row" id="categoryList"><button class="category-chip active" data-category="all">All Categories</button></div>
- </section>
- <section class="section" id="popular-stores">
-  <div class="section-head"><div><h2>Popular Stores</h2><p>Explore offers from popular brands and stores</p></div><a class="text-link" href="#latest-deals">View Deals</a></div>
-  <div class="store-grid" id="storeList"><div class="loading">Loading stores...</div></div>
- </section>
- <section class="section" id="latest-deals">
-  <div class="section-head"><div><h2 id="dealHeading">Latest Deals & Coupons</h2><p>Fresh offers to help you save on your shopping</p></div></div>
-  <div class="deal-list" id="couponList"><div class="loading">Loading latest deals...</div></div>
- </section>
- <section class="section newsletter">
-  <div><h2>Get the best deals in your inbox</h2><p>Stay updated with new offers and discount codes.</p></div>
-  <form class="newsletter-form" id="newsletterForm"><input id="newsletterEmail" type="email" placeholder="Enter your email address" required><button type="submit">Subscribe</button></form>
- </section>
- <div class="status" id="pageStatus" aria-live="polite"></div>
+ <div class="content-layout">
+  <div class="main-column">
+   <section id="storeProfile" class="hidden"></section>
+   <section class="section" id="categorySection">
+    <div class="section-head"><div><h2>Shop By Category</h2><p>Find offers from the categories you love</p></div></div>
+    <div class="category-row" id="categoryList"><button class="category-chip active" data-category="all">All Categories</button></div>
+   </section>
+   <section class="section" id="popular-stores">
+    <div class="section-head"><div><h2>Popular Stores</h2><p>Explore offers from popular brands and stores</p></div><a class="text-link" href="#latest-deals">View Deals</a></div>
+    <div class="store-grid" id="storeList"><div class="loading">Loading stores...</div></div>
+   </section>
+   <section class="section" id="latest-deals">
+    <div class="section-head"><div><h2 id="dealHeading">Latest Deals & Coupons</h2><p>Fresh offers to help you save on your shopping</p></div></div>
+    <div class="deal-list" id="couponList"><div class="loading">Loading latest deals...</div></div>
+   </section>
+   <section class="section newsletter">
+    <div><h2>Get the best deals in your inbox</h2><p>Stay updated with new offers and discount codes.</p></div>
+    <form class="newsletter-form" id="newsletterForm"><input id="newsletterEmail" type="email" placeholder="Enter your email address" required><button type="submit">Subscribe</button></form>
+   </section>
+   <div class="status" id="pageStatus" aria-live="polite"></div>
+  </div>
+  <aside class="side-column">
+   <div class="side-box"><h3>✦ Store Information</h3><p>Latest offers and verified coupon codes.</p><p>Updated regularly</p><p>Save more with Discount Price.</p><a class="submit-btn" href="#latest-deals">Submit Coupon</a><div class="side-social">f ◎ ▶ ♪ in</div></div>
+   <div class="side-box"><h3>Contact & Support</h3><p>✉ Contact Support</p><p>For help with deals, offers and coupons, contact our support team.</p></div>
+   <div class="side-box"><h3>Why Trust Us?</h3><p>We help shoppers discover useful offers, discount codes and savings from stores around the world.</p><p>Always check offer terms on the store website before purchase.</p></div>
+   <div class="side-box"><div class="author"><div class="author-avatar">DP</div><strong>Discount Price Team</strong></div><p>We share helpful deals, shopping tips and special offers to make your shopping easier.</p></div>
+  </aside>
+ </div>
 </main>
 <footer>
  <div class="container">
