@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,10 +8,57 @@
 <title>Discount Price Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#101827;color:#fff;font-family:Arial,sans-serif}.hidden{display:none!important}button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:7px;padding:12px 16px;background:#16a875;color:white;font-weight:bold}button:disabled{opacity:.5}input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;background:#101827;color:white;border:1px solid #42516a;border-radius:7px}label{display:block;color:#cbd5e1;font-size:14px}.login{max-width:400px;margin:70px auto;background:#1c293b;padding:30px;border-radius:14px}h1,h2{color:#38d996}.login h1{text-align:center}.login p{text-align:center;color:#aab5c5}#message{margin-top:15px;overflow-wrap:anywhere}header{background:#1c293b;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:15px}header h2{margin:0}main{max-width:1100px;margin:25px auto;padding:0 16px}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.tabs button{background:#29384d}.tabs button.active{background:#16a875}.panel{background:#1c293b;padding:22px;border-radius:12px;margin-bottom:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.store{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}.store h3{color:#38d996;margin-top:0}.store img{width:65px;height:65px;object-fit:contain;background:white;border-radius:8px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.secondary{background:#42516a}.danger{background:#c0392b}small{color:#aab5c5}#storeForm,#couponForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 14px}#storeForm .full,#couponForm .full{grid-column:1/-1}a{color:#38d996;overflow-wrap:anywhere}.notice{margin:10px 0;overflow-wrap:anywhere}.coupon{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}.coupon h3{color:#38d996;margin-top:0}.sortbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:12px 0}.sortbar select{max-width:260px;margin:0}.featured{color:#fbbf24;font-weight:bold}.muted{color:#aab5c5;font-size:13px}@media(max-width:500px){header{padding:14px;align-items:flex-start}main{margin:15px auto}.panel{padding:15px}}
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:#fff;font-family:Arial,sans-serif}
+.hidden{display:none!important}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:7px;padding:12px 16px;background:#16a875;color:white;font-weight:bold}
+button:disabled{opacity:.5}
+input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;background:#101827;color:white;border:1px solid #42516a;border-radius:7px}
+label{display:block;color:#cbd5e1;font-size:14px}
+.login{max-width:400px;margin:70px auto;background:#1c293b;padding:30px;border-radius:14px}
+.login h1{text-align:center}
+.login p{text-align:center;color:#aab5c5}
+#message{margin-top:15px;overflow-wrap:anywhere}
+header{background:#1c293b;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+header h2{margin:0}
+main{max-width:1100px;margin:25px auto;padding:0 16px}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.tabs button{background:#29384d}
+.tabs button.active{background:#16a875}
+.panel{background:#1c293b;padding:22px;border-radius:12px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.store{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}
+.store h3{color:#38d996;margin-top:0}
+.store img{width:65px;height:65px;object-fit:contain;background:white;border-radius:8px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.secondary{background:#42516a}
+.danger{background:#c0392b}
+small{color:#aab5c5}
+#storeForm,#couponForm,#settingsForm,#faqForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 14px}
+#storeForm .full,#couponForm .full,#settingsForm .full,#faqForm .full{grid-column:1/-1}
+a{color:#38d996;overflow-wrap:anywhere}
+.notice{margin:10px 0;overflow-wrap:anywhere}
+.coupon{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}
+.coupon h3{color:#38d996;margin-top:0}
+.sortbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.sortbar select{max-width:260px;margin:0}
+.featured{color:#fbbf24;font-weight:bold}
+.muted{color:#aab5c5;font-size:13px}
+.faq-card{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}
+.faq-card h3{color:#38d996;margin:0 0 10px}
+.faq-card p{white-space:pre-wrap}
+.status-active{color:#38d996;font-weight:bold}
+.status-inactive{color:#fbbf24;font-weight:bold}
+@media(max-width:500px){
+ header{padding:14px;align-items:flex-start}
+ main{margin:15px auto}
+ .panel{padding:15px}
+}
 </style>
 </head>
 <body>
+
 <section id="loginPage" class="login">
 <h1>Discount Price</h1><p>Admin Portal Login</p>
 <form id="loginForm">
@@ -39,6 +88,7 @@
 <button id="categoriesTab" class="secondary">Categories</button>
 <button id="campaignsTab" class="secondary">Promo Campaigns</button>
 <button id="analyticsTab" class="secondary">Analytics</button>
+<button id="websiteTab" class="secondary">Website Settings</button>
 </div>
 
 <section id="storesSection">
@@ -84,7 +134,56 @@
 <div class="panel"><h2>All Coupons</h2><div class="sortbar"><label for="couponSortView">Sort list:</label><select id="couponSortView"><option value="featured">Featured First</option><option value="discount">Highest Discount</option><option value="latest">Latest Deals</option><option value="manual">Manual Order</option></select></div><small>Manual Order ke liye Move Up / Move Down buttons use karein. Featured deals public website par pehle dikhengi.</small><div id="couponList" class="grid">Open Coupons tab to load coupons.</div></div>
 </section>
 
-<section id="otherSection" class="panel hidden"><h2 id="otherHeading">Coming Soon</h2><p id="otherText">This section will be connected after its database structure is checked.</p></section>
+<section id="otherSection" class="panel hidden">
+<h2 id="otherHeading">Coming Soon</h2>
+<p id="otherText">This section will be connected after its database structure is checked.</p>
+</section>
+
+<!-- WEBSITE SETTINGS -->
+<section id="websiteSection" class="hidden">
+<div class="panel">
+<h2>Website Settings</h2>
+<p><small>Yahan se About Us, Contact Details aur Social Media links update karein.</small></p>
+<div id="settingsMessage" class="notice"></div>
+<form id="settingsForm">
+<div><label>About Us Heading</label><input id="aboutTitle" placeholder="About Discount Price"></div>
+<div><label>Contact Email</label><input id="contactEmail" type="email" placeholder="support@example.com"></div>
+<div><label>Contact Phone</label><input id="contactPhone" type="text" placeholder="+92 300 1234567"></div>
+<div class="full"><label>About Us Description</label><textarea id="aboutContent" rows="6" placeholder="Write a short introduction about your website..."></textarea></div>
+<div><label>Facebook URL</label><input id="socialFacebook" type="url" placeholder="https://facebook.com/yourpage"></div>
+<div><label>Instagram URL</label><input id="socialInstagram" type="url" placeholder="https://instagram.com/yourpage"></div>
+<div><label>YouTube URL</label><input id="socialYoutube" type="url" placeholder="https://youtube.com/@yourchannel"></div>
+<div><label>TikTok URL</label><input id="socialTiktok" type="url" placeholder="https://tiktok.com/@youraccount"></div>
+<div><label>Pinterest URL</label><input id="socialPinterest" type="url" placeholder="https://pinterest.com/youraccount"></div>
+<div class="full actions"><button type="submit" id="saveSettingsBtn">Save Website Settings</button></div>
+</form>
+</div>
+
+<div class="panel">
+<h2>FAQ Management</h2>
+<p><small>Frequently Asked Questions add, edit aur delete karein. Inactive FAQ public website par show nahi honge.</small></p>
+<div id="faqMessage" class="notice"></div>
+<button id="addFaqBtn">+ Add New FAQ</button>
+</div>
+
+<div class="panel hidden" id="faqFormPanel">
+<h2 id="faqFormHeading">Add New FAQ</h2>
+<form id="faqForm">
+<input type="hidden" id="faqEditId">
+<div class="full"><label>Question *</label><input id="faqQuestion" required placeholder="Example: How do I use a coupon code?"></div>
+<div class="full"><label>Answer *</label><textarea id="faqAnswer" rows="4" required placeholder="Write the answer..."></textarea></div>
+<div><label>Sort Order (lower number appears first)</label><input id="faqSortOrder" type="number" value="0" step="1"></div>
+<div><label>Status</label><select id="faqActive"><option value="true">Active</option><option value="false">Inactive</option></select></div>
+<div class="full actions"><button type="submit" id="saveFaqBtn">Save FAQ</button><button type="button" class="secondary" id="cancelFaqBtn">Cancel</button></div>
+</form>
+</div>
+
+<div class="panel">
+<h2>All FAQs</h2>
+<div id="faqList" class="grid">Open Website Settings to load FAQs.</div>
+</div>
+</section>
+
 </main></section>
 
 <script>
@@ -99,6 +198,7 @@ let stores = [];
 let categories = [];
 let coupons = [];
 let storeCouponCounts = {};
+let faqs = [];
 
 function message(id,text,ok=false){
  const el=$(id);
@@ -226,6 +326,7 @@ $("logoutBtn").onclick=async()=>{
  showLogin();
 };
 
+/* STORE MANAGEMENT */
 function resetStoreForm(){
  $("storeForm").reset();
  $("editId").value="";
@@ -442,6 +543,7 @@ async function deleteStore(id,name){
 
 $("searchStore").addEventListener("input",renderStores);
 
+/* COUPON MANAGEMENT */
 async function loadStoresForCoupons(){
  const {data,error}=await client.from("stores")
  .select("id,name")
@@ -705,14 +807,218 @@ async function deleteCoupon(id,title){
  await loadCoupons();
 }
 
-const sections=["stores","coupons","categories","campaigns","analytics"];
+/* WEBSITE SETTINGS: ABOUT, CONTACT AND SOCIAL LINKS */
+async function loadWebsiteSettings(){
+ message("settingsMessage","Loading website settings...",true);
+
+ const {data,error}=await client.from("website_settings")
+  .select("id,about_title,about_content,contact_email,contact_phone,social_links")
+  .eq("id","main")
+  .maybeSingle();
+
+ if(error){
+  message("settingsMessage","Could not load settings: "+error.message);
+  return;
+ }
+
+ const settings=data||{};
+ const social=settings.social_links&&typeof settings.social_links==="object"
+  ?settings.social_links:{};
+
+ $("aboutTitle").value=settings.about_title||"";
+ $("aboutContent").value=settings.about_content||"";
+ $("contactEmail").value=settings.contact_email||"";
+ $("contactPhone").value=settings.contact_phone||"";
+ $("socialFacebook").value=social.facebook||"";
+ $("socialInstagram").value=social.instagram||"";
+ $("socialYoutube").value=social.youtube||"";
+ $("socialTiktok").value=social.tiktok||"";
+ $("socialPinterest").value=social.pinterest||"";
+
+ message("settingsMessage","Website settings loaded.",true);
+}
+
+$("settingsForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+
+ const record={
+  id:"main",
+  about_title:$("aboutTitle").value.trim(),
+  about_content:$("aboutContent").value.trim(),
+  contact_email:$("contactEmail").value.trim(),
+  contact_phone:$("contactPhone").value.trim(),
+  social_links:{
+   facebook:$("socialFacebook").value.trim(),
+   instagram:$("socialInstagram").value.trim(),
+   youtube:$("socialYoutube").value.trim(),
+   tiktok:$("socialTiktok").value.trim(),
+   pinterest:$("socialPinterest").value.trim()
+  },
+  updated_at:new Date().toISOString()
+ };
+
+ $("saveSettingsBtn").disabled=true;
+ message("settingsMessage","Saving website settings...",true);
+
+ const {error}=await client.from("website_settings")
+  .upsert(record,{onConflict:"id"});
+
+ $("saveSettingsBtn").disabled=false;
+
+ if(error){
+  message("settingsMessage","Save error: "+error.message);
+  return;
+ }
+
+ message("settingsMessage","Website settings saved successfully!",true);
+});
+
+/* FAQ MANAGEMENT */
+function resetFaqForm(){
+ $("faqForm").reset();
+ $("faqEditId").value="";
+ $("faqSortOrder").value="0";
+ $("faqActive").value="true";
+ $("faqFormHeading").textContent="Add New FAQ";
+ $("saveFaqBtn").textContent="Save FAQ";
+ $("faqFormPanel").classList.add("hidden");
+}
+
+$("addFaqBtn").onclick=()=>{
+ resetFaqForm();
+ $("faqFormPanel").classList.remove("hidden");
+ window.scrollTo({top:0,behavior:"smooth"});
+};
+
+$("cancelFaqBtn").onclick=resetFaqForm;
+
+$("faqForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+
+ const id=$("faqEditId").value;
+ const record={
+  question:$("faqQuestion").value.trim(),
+  answer:$("faqAnswer").value.trim(),
+  sort_order:Number($("faqSortOrder").value)||0,
+  is_active:$("faqActive").value==="true"
+ };
+
+ if(!record.question||!record.answer){
+  message("faqMessage","Question aur Answer dono required hain.");
+  return;
+ }
+
+ $("saveFaqBtn").disabled=true;
+ message("faqMessage","Saving FAQ...",true);
+
+ const result=id
+  ?await client.from("faqs").update(record).eq("id",id)
+  :await client.from("faqs").insert(record);
+
+ $("saveFaqBtn").disabled=false;
+
+ if(result.error){
+  message("faqMessage","FAQ save error: "+result.error.message);
+  return;
+ }
+
+ message("faqMessage",id?"FAQ updated successfully!":"FAQ added successfully!",true);
+ resetFaqForm();
+ await loadFaqs();
+});
+
+async function loadFaqs(){
+ $("faqList").textContent="Loading FAQs...";
+
+ const {data,error}=await client.from("faqs")
+  .select("id,question,answer,sort_order,is_active,created_at")
+  .order("sort_order",{ascending:true})
+  .order("created_at",{ascending:false});
+
+ if(error){
+  $("faqList").textContent="Could not load FAQs: "+error.message;
+  message("faqMessage","FAQ loading error: "+error.message);
+  return;
+ }
+
+ faqs=data||[];
+ renderFaqs();
+}
+
+function renderFaqs(){
+ const list=$("faqList");
+ list.replaceChildren();
+
+ if(!faqs.length){
+  addText(list,"p","No FAQs added yet.");
+  return;
+ }
+
+ faqs.forEach(faq=>{
+  const card=document.createElement("article");
+  card.className="faq-card";
+
+  addText(card,"h3",faq.question||"Untitled question");
+  addText(card,"p",faq.answer||"");
+  addText(card,"p","Status: "+(faq.is_active?"Active":"Inactive"),
+   faq.is_active?"status-active":"status-inactive");
+  addText(card,"p","Sort Order: "+(faq.sort_order??0),"muted");
+
+  const actions=document.createElement("div");
+  actions.className="actions";
+
+  const edit=document.createElement("button");
+  edit.textContent="Edit";
+  edit.onclick=()=>editFaq(faq);
+  actions.appendChild(edit);
+
+  const del=document.createElement("button");
+  del.textContent="Delete";
+  del.className="danger";
+  del.onclick=()=>deleteFaq(faq.id,faq.question);
+  actions.appendChild(del);
+
+  card.appendChild(actions);
+  list.appendChild(card);
+ });
+}
+
+function editFaq(faq){
+ $("faqEditId").value=faq.id;
+ $("faqQuestion").value=faq.question||"";
+ $("faqAnswer").value=faq.answer||"";
+ $("faqSortOrder").value=faq.sort_order??0;
+ $("faqActive").value=String(!!faq.is_active);
+ $("faqFormHeading").textContent="Edit FAQ";
+ $("saveFaqBtn").textContent="Update FAQ";
+ $("faqFormPanel").classList.remove("hidden");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function deleteFaq(id,question){
+ if(!confirm("Delete this FAQ? This cannot be undone."))return;
+
+ const {error}=await client.from("faqs").delete().eq("id",id);
+
+ if(error){
+  message("faqMessage","FAQ delete error: "+error.message);
+  return;
+ }
+
+ message("faqMessage","FAQ deleted successfully.",true);
+ await loadFaqs();
+}
+
+/* DASHBOARD TABS */
+const sections=["stores","coupons","categories","campaigns","analytics","website"];
 
 const headings={
  stores:"Stores",
  coupons:"Coupons",
  categories:"Categories",
  campaigns:"Promo Campaigns",
- analytics:"Analytics"
+ analytics:"Analytics",
+ website:"Website Settings"
 };
 
 sections.forEach(key=>{
@@ -725,6 +1031,7 @@ sections.forEach(key=>{
 
   $("storesSection").classList.toggle("hidden",key!=="stores");
   $("couponsSection").classList.toggle("hidden",key!=="coupons");
+  $("websiteSection").classList.toggle("hidden",key!=="website");
 
   $("otherSection").classList.toggle(
    "hidden",
@@ -736,13 +1043,18 @@ sections.forEach(key=>{
    loadCoupons();
   }
 
+  if(key==="website"){
+   loadWebsiteSettings();
+   loadFaqs();
+  }
+
   if(["categories","campaigns","analytics"].includes(key)){
    $("otherHeading").textContent=headings[key];
 
    $("otherText").textContent=key==="analytics"
     ?"Analytics will be connected after click tracking is configured."
     :"This section will be connected after its database columns and security are checked.";
-  };
+  }
  };
 });
 
@@ -755,7 +1067,12 @@ client.auth.getSession().then(({data,error})=>{
  if(data.session)showDashboard();
  else showLogin();
 });
-
 </script>
 </body>
 </html>
+'''
+
+path = Path("/mnt/data/discount-price-admin-with-website-settings.html")
+path.write_text(html, encoding="utf-8")
+print(f"Created: {path}")
+print(f"File size: {path.stat().st_size:,} bytes")
