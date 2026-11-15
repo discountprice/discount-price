@@ -94,6 +94,7 @@ const client = window.supabase.createClient(
 );
 const $ = id => document.getElementById(id);
 let stores = [], categories = [], coupons = [];
+ let storeCouponCounts = {};
 function message(id,text,ok=false){$(id).textContent=text;$(id).style.color=ok?"#38d996":"#ff7777";}
 function makeSlug(value){return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
 
