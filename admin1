@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin · Discount Price</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--bg:#f6f6f8;--sf:#fff;--sf2:#eeeff3;--tx:#202124;--mu:#6b7280;--bd:#e3e4ea;--ac:#d50404;--acbg:#fff0f0;--ok:#0f8a5f;--okbg:#dcf5ea;--bad:#c4372f;--badbg:#fbe3e1}
+@media(prefers-color-scheme:dark){:root{--bg:#14161c;--sf:#1c1f27;--sf2:#262a35;--tx:#e8eaf0;--mu:#9099ab;--bd:#2d3240;--ac:#ff5a5a;--acbg:#3a1d1f;--ok:#4fd1a0;--okbg:#14352b;--bad:#ff8a80;--badbg:#3d1c1a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 Arial,Helvetica,sans-serif}
+.app{display:flex;min-height:100vh}
+aside{width:220px;background:var(--sf);border-right:1px solid var(--bd);padding:18px 12px;position:sticky;top:0;height:100vh;flex-shrink:0}
+.brand{font-weight:900;font-size:18px;color:var(--ac);padding:2px 10px 16px}.brand span{color:var(--tx)}
+.nav{display:block;width:100%;text-align:left;background:none;border:0;color:var(--tx);padding:9px 10px;border-radius:8px;font:inherit;cursor:pointer}
+.nav:hover{background:var(--sf2)}.nav.on{background:var(--acbg);color:var(--ac);font-weight:700}
+main{flex:1;min-width:0;padding:22px 28px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+h1{font-size:22px;margin:0}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer}
+.btn.g{background:var(--sf2);color:var(--tx)}.btn.s{padding:4px 9px;font-size:12px}.btn.d{background:var(--badbg);color:var(--bad)}.btn:disabled{opacity:.6}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.filters{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+input,select,textarea{background:var(--sf);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font:inherit;min-width:0}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden}.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:820px}
+th{text-align:left;color:var(--mu);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--bd);vertical-align:middle}tr:last-child td{border-bottom:0}
+.tag{display:inline-block;background:var(--sf2);color:var(--mu);border-radius:6px;padding:1px 7px;font-size:12px;margin:0 4px 2px 0}
+.st{border-radius:99px;padding:2px 10px;font-size:12px;font-weight:700;border:0;cursor:pointer}.st.A{background:var(--okbg);color:var(--ok)}.st.I{background:var(--badbg);color:var(--bad)}
+.logo{width:34px;height:34px;border-radius:8px;background:var(--acbg);color:var(--ac);display:grid;place-items:center;font-weight:800;overflow:hidden}.logo img{max-width:100%;max-height:100%;object-fit:contain}
+.id{color:var(--mu);font-family:ui-monospace,monospace;font-size:12px}
+.empty{padding:28px;text-align:center;color:var(--mu)}
+dialog{background:var(--sf);color:var(--tx);border:1px solid var(--bd);border-radius:12px;padding:20px;width:min(520px,94vw);max-height:92vh;overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+label{display:block;color:var(--mu);margin:10px 0 4px;font-size:13px}dialog input,dialog select,dialog textarea{width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.login{max-width:360px;margin:12vh auto;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:24px}
+.login input{width:100%;margin-bottom:10px}.err{color:var(--bad);min-height:20px;margin:4px 0}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:8px 16px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
+#toast.on{opacity:1}
+@media(max-width:760px){.app{flex-direction:column}aside{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap;gap:4px;padding:10px}.brand{width:100%}.nav{width:auto}main{padding:16px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<dialog id="dlg"><div id="frm"></div></dialog>
+<div id="toast" role="status"></div>
+<script>
+const SB_URL="https://eyaukiovgugmiyytybdg.supabase.co";
+const SB_KEY="sb_publishable_qahiC18UeUqc6qVosbenCw_zKmQ7vb1";
+const db=supabase.createClient(SB_URL,SB_KEY);
+let D={stores:[],cats:[],coupons:[]},page="stores",F={q:"",st:"",cat:"",store:""};
+const $=s=>document.querySelector(s);
+const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const slug=n=>n.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const act=r=>String(r.status||"").toLowerCase()==="active";
+function ago(t){if(!t)return"-";const d=Math.floor((Date.now()-new Date(t))/864e5);return d<1?"today":d===1?"yesterday":d<14?d+" days ago":d<30?Math.floor(d/7)+" weeks ago":Math.floor(d/30)+" months ago"}
+function toast(m){const t=$("#toast");t.textContent=m;t.className="on";clearTimeout(toast.h);toast.h=setTimeout(()=>t.className="",2600)}
+function fail(e){toast("Error: "+(e.message||e))}
+const catName=id=>(D.cats.find(c=>String(c.id)===String(id))||{}).name;
+const cnt=id=>D.coupons.filter(c=>String(c.store_id)===String(id)).length;
+
+async function boot(){
+  const {data}=await db.auth.getSession();
+  data.session?shell():loginView();
+}
+function loginView(){
+  $("#root").innerHTML=`<form class="login" id="lf"><div class="brand">Discount<span>Price</span> admin</div>
+  <input id="em" type="email" placeholder="Admin email" required autocomplete="username">
+  <input id="pw" type="password" placeholder="Password" required autocomplete="current-password">
+  <div class="err" id="er"></div><button class="btn" style="width:100%">Sign in</button></form>`;
+  $("#lf").onsubmit=async e=>{e.preventDefault();$("#er").textContent="";
+    const {error}=await db.auth.signInWithPassword({email:$("#em").value.trim(),password:$("#pw").value});
+    if(error)$("#er").textContent=error.message;else shell()}
+}
+async function shell(){
+  $("#root").innerHTML=`<div class="app"><aside><div class="brand">Discount<span>Price</span></div>
+  <button class="nav" data-p="stores">Stores</button><button class="nav" data-p="coupons">Coupons</button>
+  <button class="nav" id="site">View website</button><button class="nav" id="out">Sign out</button></aside><main id="view"></main></div>`;
+  document.querySelectorAll(".nav[data-p]").forEach(b=>b.onclick=()=>{page=b.dataset.p;if(page==="coupons")F.store="";render()});
+  $("#site").onclick=()=>openSite();
+  $("#out").onclick=async()=>{await db.auth.signOut();loginView()};
+  await load();render();
+}
+async function load(){
+  const [s,c,k]=await Promise.all([
+    db.from("stores").select("*").order("created_at",{ascending:false}),
+    db.from("categories").select("id,name").order("name"),
+    db.from("coupons").select("*").order("created_at",{ascending:false})]);
+  if(s.error)return fail(s.error);if(c.error)return fail(c.error);if(k.error)return fail(k.error);
+  D.stores=s.data||[];D.cats=c.data||[];D.coupons=k.data||[];
+}
+function render(){
+  document.querySelectorAll(".nav[data-p]").forEach(b=>b.classList.toggle("on",b.dataset.p===page));
+  (page==="stores"?storesView:couponsView)($("#view"));
+}
+function siteUrl(s){
+  const p=location.pathname.replace(/\/admin(\/[^\/]*)?$/,"/").replace(/[^\/]*$/,"");
+  return location.origin+p+(s?"?store="+encodeURIComponent(s):"");
+}
+function openSite(s){
+  if(location.protocol==="file:")return toast("Upload admin.html to your website first, then Visit will work.");
+  window.open(siteUrl(s),"_blank","noopener");
+}
+
+function storesView(v){
+  v.innerHTML=`<div class="top"><h1>Stores</h1><button class="btn" id="add">Add store</button></div>
+  <div class="filters"><input id="fq" placeholder="Search stores" value="${esc(F.q)}">
+  <select id="fst"><option value="">Any status</option><option value="active">Live</option><option value="inactive">Inactive</option></select>
+  <select id="fc"><option value="">Any category</option>${D.cats.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}</select></div>
+  <div class="card"><div class="scroll"><table><tr><th>ID</th><th>Logo</th><th>Category</th><th>Name</th><th>Status</th><th>Coupons</th><th>Created</th><th>Actions</th></tr><tbody id="tb"></tbody></table></div></div>`;
+  $("#fst").value=F.st;$("#fc").value=F.cat;
+  const rows=()=>{
+    const l=D.stores.filter(s=>(!F.q||(s.name||"").toLowerCase().includes(F.q.toLowerCase()))&&(!F.st||(F.st==="active")===act(s))&&(!F.cat||String(s.category_id)===F.cat));
+    $("#tb").innerHTML=l.length?l.map(s=>`<tr><td class="id">${esc(String(s.id).slice(0,8))}</td>
+    <td><div class="logo">${s.logo_url?`<img src="${esc(s.logo_url)}" alt="" onerror="this.remove()">`:esc((s.name||"?")[0])}</div></td>
+    <td>${catName(s.category_id)?`<span class="tag">${esc(catName(s.category_id))}</span>`:'<span class="id">None</span>'}</td>
+    <td><b>${esc(s.name)}</b><div class="id">${esc(s.slug)}</div></td>
+    <td><button class="st ${act(s)?"A":"I"}" data-t="${s.id}">${act(s)?"Active":"Inactive"}</button></td>
+    <td><button class="btn g s" data-c="${s.id}">${cnt(s.id)} coupons</button></td><td>${ago(s.created_at)}</td>
+    <td><button class="btn s" data-v="${s.id}">Visit</button> <button class="btn g s" data-e="${s.id}">Edit</button> <button class="btn d s" data-x="${s.id}">Delete</button></td></tr>`).join("")
+    :`<tr><td colspan="8" class="empty">No stores match. Clear the filters or add a store.</td></tr>`};
+  rows();
+  $("#fq").oninput=e=>{F.q=e.target.value;rows()};$("#fst").onchange=e=>{F.st=e.target.value;rows()};$("#fc").onchange=e=>{F.cat=e.target.value;rows()};
+  $("#add").onclick=()=>storeForm();
+  $("#tb").onclick=async e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset,find=id=>D.stores.find(s=>String(s.id)===id);
+    if(d.c){F.store=d.c;page="coupons";render()}
+    if(d.v)openSite(find(d.v).slug);
+    if(d.e)storeForm(d.e);
+    if(d.t){const s=find(d.t),{error}=await db.from("stores").update({status:act(s)?"inactive":"active"}).eq("id",s.id);if(error)return fail(error);await load();rows();toast("Status updated")}
+    if(d.x){const s=find(d.x);if(!confirm(`Delete ${s.name} and its ${cnt(s.id)} coupons?`))return;
+      let r=await db.from("coupons").delete().eq("store_id",s.id);if(r.error)return fail(r.error);
+      r=await db.from("stores").delete().eq("id",s.id);if(r.error)return fail(r.error);await load();render();toast("Store deleted")}};
+}
+const fld=(l,id,v,t="text",x="")=>`<label for="${id}">${l}</label><input id="${id}" type="${t}" value="${esc(v)}" ${x}>`;
+function storeForm(id){
+  const s=id?D.stores.find(x=>String(x.id)===String(id)):{status:"active"};
+  $("#frm").innerHTML=`<h2 style="margin:0">${id?"Edit store":"Add store"}</h2>${fld("Name","fn",s.name||"","text","required")}${fld("Slug (used in the website link)","fs",s.slug||"")}
+  <label for="fcat">Category</label><select id="fcat"><option value="">None</option>${D.cats.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}</select>
+  ${fld("Website URL","fw",s.web_url||"","url")}${fld("Affiliate URL","fa",s.aff_url||"","url")}${fld("Logo URL","fl",s.logo_url||"","url")}
+  <label for="fd">Description</label><textarea id="fd" rows="3">${esc(s.description||"")}</textarea>
+  <div class="two"><div>${fld("Country","fco",s.country||"")}</div><div><label for="fstt">Status</label><select id="fstt"><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div>
+  <div class="row"><button class="btn g" id="cx">Cancel</button><button class="btn" id="ok">Save store</button></div>`;
+  $("#fcat").value=s.category_id||"";$("#fstt").value=act(s)?"active":"inactive";$("#dlg").showModal();
+  $("#fn").oninput=()=>{if(!id&&!$("#fs").dataset.m)$("#fs").value=slug($("#fn").value)};$("#fs").oninput=()=>$("#fs").dataset.m=1;
+  $("#cx").onclick=()=>$("#dlg").close();
+  $("#ok").onclick=async()=>{const n=$("#fn").value.trim();if(!n)return $("#fn").focus();
+    const p={name:n,slug:$("#fs").value.trim()||slug(n),category_id:$("#fcat").value||null,web_url:$("#fw").value.trim()||null,aff_url:$("#fa").value.trim()||null,logo_url:$("#fl").value.trim()||null,description:$("#fd").value.trim()||null,country:$("#fco").value.trim()||null,status:$("#fstt").value};
+    $("#ok").disabled=true;
+    const {error}=id?await db.from("stores").update(p).eq("id",id):await db.from("stores").insert(p);
+    $("#ok").disabled=false;if(error)return fail(error);
+    $("#dlg").close();await load();render();toast("Store saved")};
+}
+
+function couponsView(v){
+  const st=D.stores.find(s=>String(s.id)===String(F.store));
+  v.innerHTML=`<div class="top"><h1>${st?esc(st.name)+" coupons":"Coupons"}</h1><button class="btn" id="add">Add coupon</button></div>
+  <div class="filters"><select id="cs"><option value="">All stores</option>${D.stores.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("")}</select>
+  <input id="cq" placeholder="Search coupons"></div>
+  <div class="card"><div class="scroll"><table><tr><th>Store</th><th>Offer</th><th>Code</th><th>Status</th><th>Ends</th><th>Actions</th></tr><tbody id="tb"></tbody></table></div></div>`;
+  $("#cs").value=F.store;let q="";
+  const nm=id=>(D.stores.find(s=>String(s.id)===String(id))||{}).name||"-";
+  const rows=()=>{const l=D.coupons.filter(c=>(!F.store||String(c.store_id)===String(F.store))&&(!q||(c.title||"").toLowerCase().includes(q))).slice(0,300);
+    $("#tb").innerHTML=l.length?l.map(c=>`<tr><td>${esc(nm(c.store_id))}</td><td>${esc(c.title)}${c.is_featured?' <span class="tag">Featured</span>':""}</td>
+    <td>${c.code?`<span class="tag">${esc(c.code)}</span>`:'<span class="id">No code</span>'}</td>
+    <td><button class="st ${act(c)?"A":"I"}" data-t="${c.id}">${act(c)?"Active":"Inactive"}</button></td><td>${esc(c.end_date||"-")}</td>
+    <td><button class="btn g s" data-e="${c.id}">Edit</button> <button class="btn d s" data-x="${c.id}">Delete</button></td></tr>`).join("")
+    :`<tr><td colspan="6" class="empty">No coupons here yet. Use Add coupon to create one.</td></tr>`};
+  rows();
+  $("#cs").onchange=e=>{F.store=e.target.value;render()};$("#cq").oninput=e=>{q=e.target.value.toLowerCase();rows()};
+  $("#add").onclick=()=>couponForm();
+  $("#tb").onclick=async e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset,find=id=>D.coupons.find(c=>String(c.id)===id);
+    if(d.e)couponForm(d.e);
+    if(d.t){const c=find(d.t),{error}=await db.from("coupons").update({status:act(c)?"inactive":"active"}).eq("id",c.id);if(error)return fail(error);await load();rows()}
+    if(d.x){if(!confirm("Delete this coupon?"))return;const {error}=await db.from("coupons").delete().eq("id",d.x);if(error)return fail(error);await load();rows();toast("Coupon deleted")}};
+}
+function couponForm(id){
+  const c=id?D.coupons.find(x=>String(x.id)===String(id)):{status:"active",coupon_type:"deal",sort_order:0};
+  $("#frm").innerHTML=`<h2 style="margin:0">${id?"Edit coupon":"Add coupon"}</h2>
+  <label for="cst">Store</label><select id="cst">${D.stores.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("")}</select>
+  ${fld("Offer title","ct",c.title||"","text","required")}
+  <div class="two"><div><label for="cty">Type</label><select id="cty"><option value="deal">Deal</option><option value="code">Code</option></select></div><div>${fld("Code","cc",c.code||"")}</div></div>
+  ${fld("Discount","cdi",c.discount||"")}${fld("Affiliate URL (leave empty to use the store link)","cu",c.affiliate_url||"","url")}
+  <label for="cde">Description</label><textarea id="cde" rows="2">${esc(c.description||"")}</textarea>
+  <div class="two"><div>${fld("Start date","csd",c.start_date||"","date")}</div><div>${fld("End date","ced",c.end_date||"","date")}</div></div>
+  <div class="two"><div>${fld("Sort order","cso",c.sort_order??0,"number")}</div><div><label for="cs2">Status</label><select id="cs2"><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div>
+  <label><input id="cf" type="checkbox" style="width:auto" ${c.is_featured?"checked":""}> Featured deal</label>
+  <div class="row"><button class="btn g" id="cx">Cancel</button><button class="btn" id="ok">Save coupon</button></div>`;
+  $("#cst").value=c.store_id||F.store||(D.stores[0]||{}).id;$("#cty").value=c.coupon_type||"deal";$("#cs2").value=act(c)?"active":"inactive";$("#dlg").showModal();
+  $("#cx").onclick=()=>$("#dlg").close();
+  $("#ok").onclick=async()=>{const t=$("#ct").value.trim();if(!t)return $("#ct").focus();
+    const p={store_id:$("#cst").value,title:t,coupon_type:$("#cty").value,code:$("#cc").value.trim()||null,discount:$("#cdi").value.trim()||null,affiliate_url:$("#cu").value.trim()||null,description:$("#cde").value.trim()||null,start_date:$("#csd").value||null,end_date:$("#ced").value||null,sort_order:Number($("#cso").value)||0,status:$("#cs2").value,is_featured:$("#cf").checked};
+    $("#ok").disabled=true;
+    const {error}=id?await db.from("coupons").update(p).eq("id",id):await db.from("coupons").insert(p);
+    $("#ok").disabled=false;if(error)return fail(error);
+    $("#dlg").close();await load();render();toast("Coupon saved")};
+}
+boot();
+</script>
+</body>
+</html>
