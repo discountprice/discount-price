@@ -1,1078 +1,197 @@
-from pathlib import Path
-
-html = r'''<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Discount Price Admin</title>
+<meta name="theme-color" content="#f8f9fb">
+<title>Discount Price · Admin Portal</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#101827;color:#fff;font-family:Arial,sans-serif}
-.hidden{display:none!important}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer;border:0;border-radius:7px;padding:12px 16px;background:#16a875;color:white;font-weight:bold}
-button:disabled{opacity:.5}
-input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;background:#101827;color:white;border:1px solid #42516a;border-radius:7px}
-label{display:block;color:#cbd5e1;font-size:14px}
-.login{max-width:400px;margin:70px auto;background:#1c293b;padding:30px;border-radius:14px}
-.login h1{text-align:center}
-.login p{text-align:center;color:#aab5c5}
-#message{margin-top:15px;overflow-wrap:anywhere}
-header{background:#1c293b;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:15px}
-header h2{margin:0}
-main{max-width:1100px;margin:25px auto;padding:0 16px}
-.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-.tabs button{background:#29384d}
-.tabs button.active{background:#16a875}
-.panel{background:#1c293b;padding:22px;border-radius:12px;margin-bottom:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.store{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}
-.store h3{color:#38d996;margin-top:0}
-.store img{width:65px;height:65px;object-fit:contain;background:white;border-radius:8px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.secondary{background:#42516a}
-.danger{background:#c0392b}
-small{color:#aab5c5}
-#storeForm,#couponForm,#settingsForm,#faqForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 14px}
-#storeForm .full,#couponForm .full,#settingsForm .full,#faqForm .full{grid-column:1/-1}
-a{color:#38d996;overflow-wrap:anywhere}
-.notice{margin:10px 0;overflow-wrap:anywhere}
-.coupon{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}
-.coupon h3{color:#38d996;margin-top:0}
-.sortbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:12px 0}
-.sortbar select{max-width:260px;margin:0}
-.featured{color:#fbbf24;font-weight:bold}
-.muted{color:#aab5c5;font-size:13px}
-.faq-card{background:#26364b;border-radius:10px;padding:16px;overflow-wrap:anywhere}
-.faq-card h3{color:#38d996;margin:0 0 10px}
-.faq-card p{white-space:pre-wrap}
-.status-active{color:#38d996;font-weight:bold}
-.status-inactive{color:#fbbf24;font-weight:bold}
-@media(max-width:500px){
- header{padding:14px;align-items:flex-start}
- main{margin:15px auto}
- .panel{padding:15px}
-}
+:root{--page:#f8f9fb;--raised:#fff;--sunken:#f1f3f5;--text:#171b20;--secondary:#4d535a;--muted:#737982;--line:#e1e3e6;--line-strong:#c7cbcf;--accent:#b64e10;--accent-hover:#a1420b;--accent-soft:#fff1e1;--accent-soft-text:#904100;--danger:#d9302e;--danger-soft:#ffefee;--success:#006336;--success-soft:#defbe7;--warning:#7f5300;--warning-soft:#fff5d4;--info:#1f5596;--info-soft:#e9f4ff;--shadow:0 1px 2px #0000000a,0 1px 3px #0000000d;--sidebar:245px}
+:root[data-theme="dark"]{--page:#0b0d11;--raised:#14171b;--sunken:#0f1215;--text:#edeff1;--secondary:#b4b8bc;--muted:#888d92;--line:#2a2e33;--line-strong:#43484e;--accent:#ed8735;--accent-hover:#f69c51;--accent-soft:#44250c;--accent-soft-text:#ffc48a;--danger:#f05653;--danger-soft:#4b1d1b;--success:#98e2b1;--success-soft:#0f3620;--warning:#f1d589;--warning-soft:#413007;--info:#afd1fc;--info-soft:#1c2f46;--shadow:0 1px 2px #0006}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--page);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:14px;line-height:1.5}
+button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.hidden{display:none!important}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:35px;padding:7px 12px;border:1px solid transparent;border-radius:8px;background:var(--accent);color:#fff;font-size:12px;font-weight:700}.btn:hover{background:var(--accent-hover)}.btn:disabled{opacity:.5;cursor:not-allowed}.btn-outline{background:var(--raised);color:var(--secondary);border-color:var(--line)}.btn-outline:hover,.btn-quiet:hover{background:var(--sunken)}.btn-quiet{background:transparent;color:var(--secondary)}.btn-danger{background:var(--danger-soft);color:var(--danger)}.btn-sm{min-height:29px;padding:4px 9px;font-size:11px}
+.field{width:100%;height:37px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:8px;background:var(--raised);color:var(--text);outline:none;font-size:13px}.field:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}textarea.field{height:auto;min-height:90px;resize:vertical}label{display:block;margin:0 0 6px;color:var(--secondary);font-size:11px;font-weight:700}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.form-field{min-width:0}.form-field.full,.form-actions{grid-column:1/-1}.form-actions{display:flex;gap:8px;flex-wrap:wrap;padding-top:4px}
+#login-screen,#reset-screen{min-height:100vh;display:grid;place-items:center;padding:22px}.login-card{width:min(405px,100%);padding:28px;background:var(--raised);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;font-size:17px;font-weight:800}.brand-mark{width:35px;height:35px;display:grid;place-items:center;border-radius:9px;background:var(--accent);color:#fff;font-size:12px;font-weight:900}.login-card h1{margin:0;text-align:center;font-size:22px}.login-card>p{margin:5px 0 23px;text-align:center;color:var(--muted);font-size:12px}.login-card .form-field{margin-bottom:13px}.login-card .btn{width:100%;height:40px}
+.message{margin-top:12px;padding:9px 11px;border-radius:8px;background:var(--sunken);color:var(--secondary);font-size:12px;overflow-wrap:anywhere}.message.success{background:var(--success-soft);color:var(--success)}.message.error{background:var(--danger-soft);color:var(--danger)}
+#app{min-height:100vh}.layout{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr)}.sidebar{position:sticky;top:0;height:100vh;overflow:auto;padding:0 12px 18px;background:var(--raised);border-right:1px solid var(--line);z-index:30}.sidebar-brand{height:59px;display:flex;align-items:center;gap:10px;padding:0 9px;margin-bottom:13px;border-bottom:1px solid var(--line);font-size:13px;font-weight:800}.nav-label{padding:13px 10px 5px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase}.nav-item{width:100%;min-height:37px;display:flex;align-items:center;gap:10px;padding:7px 10px;margin:2px 0;border:0;border-radius:8px;background:transparent;color:var(--secondary);text-align:left;font-size:12px;font-weight:600}.nav-item:hover{background:var(--sunken);color:var(--text)}.nav-item.active{background:var(--accent-soft);color:var(--accent-soft-text)}.nav-icon{width:17px;text-align:center;font-size:15px}.nav-count{margin-left:auto;padding:1px 6px;border-radius:20px;background:var(--sunken);color:var(--muted);font-size:10px}.sidebar-foot{margin-top:20px;padding:13px 10px;border-top:1px solid var(--line);color:var(--muted);font-size:10px}
+.main{min-width:0}.topbar{position:sticky;top:0;z-index:20;height:59px;display:flex;align-items:center;gap:11px;padding:0 24px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--raised) 93%,transparent);backdrop-filter:blur(10px)}.top-title{color:var(--secondary);font-size:12px;font-weight:700}.spacer{flex:1}.top-link{height:33px;display:inline-flex;align-items:center;padding:0 10px;border:1px solid var(--line);border-radius:8px;color:var(--secondary);font-size:11px}.icon-btn{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;background:var(--raised);color:var(--secondary)}.mobile-menu{display:none}
+.content{width:min(1450px,100%);margin:auto;padding:26px}.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:20px}.breadcrumb{margin-bottom:6px;color:var(--muted);font-size:11px}.page-head h1{margin:0;font-size:24px;letter-spacing:-.6px}.page-head p{margin:5px 0 0;color:var(--muted);font-size:12px}.actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.card{overflow:hidden;background:var(--raised);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.card+.card{margin-top:16px}.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}.card-head h2{margin:0;font-size:13px}.card-head p{margin:3px 0 0;color:var(--muted);font-size:11px}.card-body{padding:17px}.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}.search-wrap{position:relative;flex:1;min-width:190px;max-width:330px}.search-wrap .field{padding-left:32px}.search-icon{position:absolute;left:10px;top:8px;color:var(--muted);font-size:16px}.toolbar select{width:auto;min-width:125px}
+.table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:11px}thead{background:var(--sunken)}th{height:41px;padding:0 12px;text-align:left;color:var(--secondary);font-size:10px;font-weight:800}td{height:54px;padding:7px 12px;border-top:1px solid var(--line);vertical-align:middle}tbody tr:hover{background:var(--sunken)}.logo{width:35px;height:35px;display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);border-radius:50%;background:var(--sunken);color:var(--muted);font-weight:800}.logo img{width:100%;height:100%;object-fit:contain}.name-cell{display:grid;gap:2px;min-width:135px}.name-cell strong{font-size:11px}.name-cell span{color:var(--muted);font-size:10px}.pill{display:inline-flex;padding:3px 7px;border-radius:30px;font-size:9px;font-weight:800}.pill.active{background:var(--success-soft);color:var(--success)}.pill.inactive{background:var(--warning-soft);color:var(--warning)}.pill.info{background:var(--info-soft);color:var(--info)}.row-actions{display:flex;justify-content:flex-end;gap:5px}.empty{padding:36px 12px;text-align:center;color:var(--muted);font-size:12px}.pager{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:11px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:10px}.pager-controls{display:flex;align-items:center;gap:6px}.pager .field{width:68px;height:29px;padding:4px 6px;font-size:10px}
+.form-card{margin-bottom:16px}.form-card h2{margin:0 0 5px;font-size:15px}.hint{margin:0 0 17px;color:var(--muted);font-size:11px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.stat{padding:15px;background:var(--raised);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow)}.stat-label{color:var(--muted);font-size:10px;font-weight:700}.stat-value{margin-top:9px;font-size:26px;font-weight:800;letter-spacing:-1px}.stat-sub{color:var(--muted);font-size:10px}.dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}.list-row{display:flex;align-items:center;gap:10px;padding:10px 15px;border-top:1px solid var(--line)}.list-row:first-child{border-top:0}.grow{flex:1;min-width:0}.list-row strong{display:block;overflow:hidden;text-overflow:ellipsis;font-size:11px}.list-row small{display:block;color:var(--muted);font-size:10px}.quick{display:grid;gap:8px}.quick .btn{width:100%;justify-content:flex-start}.faq-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:14px}.faq-card{padding:13px;border:1px solid var(--line);border-radius:9px}.faq-card h3{margin:0 0 7px;font-size:12px}.faq-card p{margin:0;color:var(--secondary);font-size:11px;white-space:pre-wrap;line-height:1.6}.faq-meta{margin-top:9px;color:var(--muted);font-size:9px}.notice{padding:13px;border:1px solid var(--line);border-radius:8px;background:var(--sunken);color:var(--secondary);font-size:11px;line-height:1.6}.toast{position:fixed;right:18px;bottom:18px;z-index:90;max-width:min(400px,calc(100vw - 36px));padding:11px 14px;border-radius:9px;background:#17212d;color:#fff;box-shadow:0 8px 30px #0003;font-size:12px}.toast.error{background:#8b2222}.overlay{display:none}
+@media(max-width:980px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dash-grid{grid-template-columns:1fr}}
+@media(max-width:740px){.layout{display:block}.sidebar{position:fixed;left:0;top:0;width:min(275px,86vw);transform:translateX(-105%);transition:transform .2s;box-shadow:var(--shadow)}body.menu-open .sidebar{transform:translateX(0)}.overlay{position:fixed;inset:0;z-index:29;background:#0007}body.menu-open .overlay{display:block}.mobile-menu{display:inline-grid;place-items:center}.topbar{height:54px;padding:0 12px}.content{padding:19px 12px}.toolbar .search-wrap{max-width:none;flex-basis:100%}.page-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:540px){.form-grid,.faq-grid{grid-template-columns:1fr}.form-field.full,.form-actions{grid-column:auto}.stats{gap:8px}.stat{padding:12px}.stat-value{font-size:22px}.content{padding:15px 9px}.card-body{padding:13px}.top-link span{display:none}.page-head h1{font-size:21px}}
 </style>
 </head>
 <body>
-
-<section id="loginPage" class="login">
-<h1>Discount Price</h1><p>Admin Portal Login</p>
-<form id="loginForm">
-<label>Admin Email</label><input type="email" id="email" required placeholder="Admin email">
-<label>Password</label><input type="password" id="password" required placeholder="Password">
-<button type="submit" style="width:100%">Login to Dashboard</button>
-</form>
-<button id="forgotBtn" class="secondary" style="width:100%;margin-top:12px">Forgot Password?</button>
-<div id="loginMessage"></div>
+<section id="login-screen">
+ <div class="login-card">
+  <div class="brand"><span class="brand-mark">DP</span> Discount Price</div>
+  <h1>Welcome back</h1><p>Sign in to your admin portal</p>
+  <form id="login-form">
+   <div class="form-field"><label for="login-email">Admin email</label><input class="field" id="login-email" type="email" required autocomplete="username" placeholder="admin@example.com"></div>
+   <div class="form-field"><label for="login-password">Password</label><input class="field" id="login-password" type="password" required autocomplete="current-password" placeholder="Enter password"></div>
+   <button class="btn" id="login-submit" type="submit">Sign in to dashboard</button>
+  </form>
+  <button class="btn btn-quiet" id="forgot-button" type="button" style="width:100%;margin-top:8px">Forgot password?</button>
+  <div id="login-message" aria-live="polite"></div>
+ </div>
 </section>
+<section id="reset-screen" class="hidden"><div class="login-card"><div class="brand"><span class="brand-mark">DP</span> Discount Price</div><h1>New password</h1><p>Choose a new password for your account</p><form id="reset-form"><div class="form-field"><label for="new-password">New password</label><input class="field" id="new-password" type="password" minlength="8" required></div><div class="form-field"><label for="confirm-password">Confirm password</label><input class="field" id="confirm-password" type="password" minlength="8" required></div><button class="btn" type="submit">Save password</button></form><div id="reset-message"></div></div></section>
 
-<section id="resetPage" class="login hidden">
-<h1>New Password</h1>
-<form id="resetForm">
-<label>New Password</label><input type="password" id="newPassword" minlength="8" required>
-<label>Confirm Password</label><input type="password" id="confirmPassword" minlength="8" required>
-<button style="width:100%">Save Password</button>
-</form><div id="resetMessage"></div>
+<section id="app" class="hidden">
+ <div class="overlay" id="overlay"></div>
+ <div class="layout">
+  <aside class="sidebar">
+   <div class="sidebar-brand"><span class="brand-mark">DP</span> Discount Price</div>
+   <nav>
+    <div class="nav-label">Workspace</div><button class="nav-item active" data-page="dashboard"><span class="nav-icon">▦</span>Dashboard</button>
+    <div class="nav-label">Marketing</div><button class="nav-item" data-page="campaigns"><span class="nav-icon">◈</span>Promo Campaigns</button><button class="nav-item" data-page="analytics"><span class="nav-icon">⌁</span>Promo Analytics</button>
+    <div class="nav-label">Store management</div><button class="nav-item" data-page="stores"><span class="nav-icon">▣</span>Stores <span class="nav-count" id="store-count">—</span></button><button class="nav-item" data-page="coupons"><span class="nav-icon">％</span>Coupons <span class="nav-count" id="coupon-count">—</span></button><button class="nav-item" data-page="categories"><span class="nav-icon">▤</span>Categories</button>
+    <div class="nav-label">Website</div><button class="nav-item" data-page="settings"><span class="nav-icon">⚙</span>Website Settings</button><button class="nav-item" data-page="faqs"><span class="nav-icon">?</span>FAQs</button>
+   </nav>
+   <div class="sidebar-foot">Discount Price Admin Portal<br>Supabase connected</div>
+  </aside>
+  <div class="main">
+   <header class="topbar"><button class="icon-btn mobile-menu" id="mobile-menu" aria-label="Open menu">☰</button><div class="top-title" id="top-title">Workspace / Dashboard</div><div class="spacer"></div><a class="top-link" href="./" target="_blank" rel="noopener"><span>View website</span> ↗</a><button class="icon-btn" id="theme-button" title="Switch theme">☾</button><button class="btn btn-outline btn-sm" id="logout-button">Log out</button></header>
+   <main class="content">
+    <section class="page" id="page-dashboard">
+     <div class="page-head"><div><div class="breadcrumb">Workspace / Overview</div><h1>Dashboard</h1><p>Welcome to your Discount Price control center.</p></div><div class="actions"><button class="btn" data-go="stores">＋ Manage stores</button></div></div>
+     <div class="stats"><article class="stat"><div class="stat-label">Total stores</div><div class="stat-value" id="stat-stores">—</div><div class="stat-sub">Stores in database</div></article><article class="stat"><div class="stat-label">Active stores</div><div class="stat-value" id="stat-active">—</div><div class="stat-sub">Currently active</div></article><article class="stat"><div class="stat-label">Total coupons</div><div class="stat-value" id="stat-coupons">—</div><div class="stat-sub">Coupons and deals</div></article><article class="stat"><div class="stat-label">Active FAQs</div><div class="stat-value" id="stat-faqs">—</div><div class="stat-sub">Published FAQ entries</div></article></div>
+     <div class="dash-grid"><div class="card"><div class="card-head"><div><h2>Recently added stores</h2><p>Your latest store records</p></div><button class="btn btn-outline btn-sm" data-go="stores">View all</button></div><div id="recent-stores"><div class="empty">Loading stores…</div></div></div><div class="card"><div class="card-head"><div><h2>Quick actions</h2><p>Common admin tasks</p></div></div><div class="card-body quick"><button class="btn btn-outline" data-go="stores">＋ Add or manage stores</button><button class="btn btn-outline" data-go="coupons">％ Add or manage coupons</button><button class="btn btn-outline" data-go="categories">▤ Manage categories</button><button class="btn btn-outline" data-go="settings">⚙ Edit website settings</button><button class="btn btn-outline" data-go="faqs">? Manage FAQs</button></div></div></div>
+    </section>
+
+    <section class="page hidden" id="page-stores">
+     <div class="page-head"><div><div class="breadcrumb">Store management / List</div><h1>Stores</h1><p>Manage affiliate stores connected to Discount Price.</p></div><div class="actions"><button class="btn" id="new-store">＋ Add new store</button></div></div>
+     <div class="card form-card hidden" id="store-form-card"><div class="card-body"><h2 id="store-form-title">Add new store</h2><p class="hint">Store details, links and category.</p><form id="store-form" class="form-grid">
+      <input type="hidden" id="store-id"><div class="form-field"><label for="store-name">Store name *</label><input class="field" id="store-name" required></div><div class="form-field"><label for="store-slug">Slug</label><input class="field" id="store-slug"></div><div class="form-field"><label for="store-url">Website URL</label><input class="field" id="store-url" type="url"></div><div class="form-field"><label for="store-aff-url">Affiliate URL</label><input class="field" id="store-aff-url" type="url"></div><div class="form-field"><label for="store-logo">Logo URL</label><input class="field" id="store-logo" type="url"></div><div class="form-field"><label for="store-country">Country</label><input class="field" id="store-country"></div><div class="form-field"><label for="store-category">Category</label><select class="field" id="store-category"><option value="">No category</option></select></div><div class="form-field"><label for="store-status">Status</label><select class="field" id="store-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="form-field full"><label for="store-description">Description</label><textarea class="field" id="store-description" rows="3"></textarea></div><div class="form-actions"><button class="btn" id="save-store" type="submit">Save store</button><button class="btn btn-outline" id="cancel-store" type="button">Cancel</button></div>
+     </form></div></div>
+     <div class="card"><div class="toolbar"><div class="search-wrap"><span class="search-icon">⌕</span><input class="field" id="store-search" type="search" placeholder="Search by name or slug"></div><select class="field" id="store-status-filter"><option value="">Any status</option><option value="active">Active</option><option value="inactive">Inactive</option></select><select class="field" id="store-category-filter"><option value="">Any category</option></select></div><div class="table-wrap"><table><thead><tr><th>Logo</th><th>Category</th><th>Name</th><th>Status</th><th># Coupons</th><th>Created</th><th style="text-align:right">Actions</th></tr></thead><tbody id="stores-body"><tr><td colspan="7" class="empty">Loading stores…</td></tr></tbody></table></div><div class="pager"><span id="stores-page-info">—</span><div class="pager-controls"><select class="field" id="stores-page-size"><option>10</option><option selected>25</option><option>50</option><option>100</option></select><button class="btn btn-outline btn-sm" id="stores-prev">Previous</button><button class="btn btn-outline btn-sm" id="stores-next">Next</button></div></div></div><div id="stores-message"></div>
+    </section>
+
+    <section class="page hidden" id="page-coupons">
+     <div class="page-head"><div><div class="breadcrumb">Store management / List</div><h1>Coupons</h1><p>Create and organize coupon codes and deals.</p></div><div class="actions"><button class="btn" id="new-coupon">＋ Add new coupon</button></div></div>
+     <div class="card form-card hidden" id="coupon-form-card"><div class="card-body"><h2 id="coupon-form-title">Add new coupon</h2><p class="hint">Choose a store and enter the deal details.</p><form id="coupon-form" class="form-grid">
+      <input type="hidden" id="coupon-id"><div class="form-field"><label for="coupon-store">Store *</label><select class="field" id="coupon-store" required><option value="">Select store</option></select></div><div class="form-field"><label for="coupon-title">Coupon / deal title *</label><input class="field" id="coupon-title" required></div><div class="form-field"><label for="coupon-type">Type</label><select class="field" id="coupon-type"><option value="code">Coupon code</option><option value="deal">Deal (no code)</option></select></div><div class="form-field"><label for="coupon-code">Coupon code</label><input class="field" id="coupon-code" placeholder="SAVE20"></div><div class="form-field"><label for="coupon-discount">Discount</label><input class="field" id="coupon-discount" placeholder="20% OFF"></div><div class="form-field"><label for="coupon-sort">Sort order (lower first)</label><input class="field" id="coupon-sort" type="number" value="0"></div><div class="form-field"><label for="coupon-featured">Featured deal</label><select class="field" id="coupon-featured"><option value="false">No</option><option value="true">Yes — show first</option></select></div><div class="form-field"><label for="coupon-status">Status</label><select class="field" id="coupon-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="form-field"><label for="coupon-start">Start date</label><input class="field" id="coupon-start" type="date"></div><div class="form-field"><label for="coupon-end">Expiry date</label><input class="field" id="coupon-end" type="date"></div><div class="form-field full"><label for="coupon-aff-url">Affiliate URL</label><input class="field" id="coupon-aff-url" type="url"></div><div class="form-field full"><label for="coupon-description">Description / terms</label><textarea class="field" id="coupon-description" rows="3"></textarea></div><div class="form-actions"><button class="btn" id="save-coupon" type="submit">Save coupon</button><button class="btn btn-outline" id="cancel-coupon" type="button">Cancel</button></div>
+     </form></div></div>
+     <div class="card"><div class="toolbar"><div class="search-wrap"><span class="search-icon">⌕</span><input class="field" id="coupon-search" type="search" placeholder="Search title, code or store"></div><select class="field" id="coupon-status-filter"><option value="">Any status</option><option value="active">Active</option><option value="inactive">Inactive</option></select><select class="field" id="coupon-sort-view"><option value="featured">Featured first</option><option value="latest">Latest deals</option><option value="discount">Highest discount</option><option value="manual">Manual order</option></select></div><div class="table-wrap"><table><thead><tr><th>Deal</th><th>Store</th><th>Type / Code</th><th>Discount</th><th>Status</th><th>Featured</th><th>Expiry</th><th style="text-align:right">Actions</th></tr></thead><tbody id="coupons-body"><tr><td colspan="8" class="empty">Loading coupons…</td></tr></tbody></table></div><div class="pager"><span id="coupons-page-info">—</span><div class="pager-controls"><select class="field" id="coupons-page-size"><option>10</option><option selected>25</option><option>50</option><option>100</option></select><button class="btn btn-outline btn-sm" id="coupons-prev">Previous</button><button class="btn btn-outline btn-sm" id="coupons-next">Next</button></div></div></div><div id="coupons-message"></div>
+    </section>
+
+    <section class="page hidden" id="page-categories">
+     <div class="page-head"><div><div class="breadcrumb">Store management / Categories</div><h1>Categories</h1><p>Organize stores using your existing categories table.</p></div><div class="actions"><button class="btn" id="new-category">＋ Add category</button></div></div>
+     <div class="card form-card hidden" id="category-form-card"><div class="card-body"><h2 id="category-form-title">Add category</h2><form id="category-form" class="form-grid"><input type="hidden" id="category-id"><div class="form-field"><label for="category-name">Category name *</label><input class="field" id="category-name" required></div><div class="form-field"><label for="category-slug">Slug</label><input class="field" id="category-slug"></div><div class="form-field"><label for="category-type">Category type</label><input class="field" id="category-type" value="store"></div><div class="form-field"><label for="category-active">Status</label><select class="field" id="category-active"><option value="true">Active</option><option value="false">Inactive</option></select></div><div class="form-field full"><label for="category-description">Description</label><textarea class="field" id="category-description" rows="2"></textarea></div><div class="form-actions"><button class="btn" id="save-category" type="submit">Save category</button><button class="btn btn-outline" id="cancel-category" type="button">Cancel</button></div></form></div></div>
+     <div class="card"><div class="toolbar"><div class="search-wrap"><span class="search-icon">⌕</span><input class="field" id="category-search" type="search" placeholder="Search categories"></div></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Slug</th><th>Type</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead><tbody id="categories-body"><tr><td colspan="5" class="empty">Loading categories…</td></tr></tbody></table></div><div class="pager"><span id="categories-count">—</span></div></div><div id="categories-message"></div>
+    </section>
+
+    <section class="page hidden" id="page-settings">
+     <div class="page-head"><div><div class="breadcrumb">Website / Content</div><h1>Website Settings</h1><p>Manage the information stored for your public website.</p></div></div>
+     <div class="card"><div class="card-head"><div><h2>About and contact information</h2><p>Saved in your website_settings table.</p></div></div><div class="card-body"><form id="settings-form" class="form-grid">
+      <div class="form-field"><label for="about-title">About page heading</label><input class="field" id="about-title" placeholder="About Discount Price"></div><div class="form-field"><label for="contact-email">Contact email</label><input class="field" id="contact-email" type="email"></div><div class="form-field"><label for="contact-phone">Contact phone</label><input class="field" id="contact-phone"></div><div class="form-field full"><label for="about-content">About us text</label><textarea class="field" id="about-content" rows="6"></textarea></div><div class="form-field"><label for="social-facebook">Facebook URL</label><input class="field" id="social-facebook" type="url"></div><div class="form-field"><label for="social-instagram">Instagram URL</label><input class="field" id="social-instagram" type="url"></div><div class="form-field"><label for="social-youtube">YouTube URL</label><input class="field" id="social-youtube" type="url"></div><div class="form-field"><label for="social-tiktok">TikTok URL</label><input class="field" id="social-tiktok" type="url"></div><div class="form-field"><label for="social-pinterest">Pinterest URL</label><input class="field" id="social-pinterest" type="url"></div><div class="form-actions"><button class="btn" id="save-settings" type="submit">Save website settings</button></div></form><div id="settings-message"></div></div></div>
+    </section>
+
+    <section class="page hidden" id="page-faqs">
+     <div class="page-head"><div><div class="breadcrumb">Website / Content</div><h1>FAQs</h1><p>Publish helpful answers to common visitor questions.</p></div><div class="actions"><button class="btn" id="new-faq">＋ Add FAQ</button></div></div>
+     <div class="card form-card hidden" id="faq-form-card"><div class="card-body"><h2 id="faq-form-title">Add FAQ</h2><form id="faq-form" class="form-grid"><input type="hidden" id="faq-id"><div class="form-field full"><label for="faq-question">Question *</label><input class="field" id="faq-question" required></div><div class="form-field full"><label for="faq-answer">Answer *</label><textarea class="field" id="faq-answer" rows="4" required></textarea></div><div class="form-field"><label for="faq-order">Sort order</label><input class="field" id="faq-order" type="number" value="0"></div><div class="form-field"><label for="faq-active">Status</label><select class="field" id="faq-active"><option value="true">Active</option><option value="false">Inactive</option></select></div><div class="form-actions"><button class="btn" id="save-faq" type="submit">Save FAQ</button><button class="btn btn-outline" id="cancel-faq" type="button">Cancel</button></div></form></div></div>
+     <div class="card"><div class="card-head"><div><h2>All FAQ entries</h2><p>Manage the questions stored in your faqs table.</p></div></div><div id="faq-list" class="faq-grid"><div class="empty">Loading FAQs…</div></div></div><div id="faqs-message"></div>
+    </section>
+
+    <section class="page hidden" id="page-campaigns"><div class="page-head"><div><div class="breadcrumb">Marketing</div><h1>Promo Campaigns</h1><p>Campaign management is not yet connected.</p></div></div><div class="card"><div class="card-body"><div class="notice">Your current database details do not include a promo campaigns table. This section is not connected to an unknown table.</div></div></div></section>
+    <section class="page hidden" id="page-analytics"><div class="page-head"><div><div class="breadcrumb">Marketing</div><h1>Promo Analytics</h1><p>Track campaign and affiliate performance.</p></div></div><div class="card"><div class="card-body"><div class="notice">Click-tracking and analytics tables have not been configured in the current database structure.</div></div></div></section>
+   </main>
+  </div>
+ </div>
 </section>
-
-<section id="dashboard" class="hidden">
-<header><h2>Discount Price Admin</h2><button id="logoutBtn" class="danger">Logout</button></header>
-<main>
-<div class="tabs">
-<button class="active" id="storesTab">Stores</button>
-<button id="couponsTab" class="secondary">Coupons</button>
-<button id="categoriesTab" class="secondary">Categories</button>
-<button id="campaignsTab" class="secondary">Promo Campaigns</button>
-<button id="analyticsTab" class="secondary">Analytics</button>
-<button id="websiteTab" class="secondary">Website Settings</button>
-</div>
-
-<section id="storesSection">
-<div class="panel"><h2>Store Management</h2><p><small>Add and manage your affiliate stores.</small></p>
-<button id="addStoreBtn">+ Add New Store</button><input id="searchStore" placeholder="Search stores..."><div id="storeMessage" class="notice"></div></div>
-<div class="panel hidden" id="formPanel"><h2 id="formHeading">Add New Store</h2>
-<form id="storeForm">
-<input type="hidden" id="editId">
-<div><label>Store Name *</label><input id="storeName" required placeholder="Example: Nike"></div>
-<div><label>Website URL</label><input id="webUrl" type="url" placeholder="https://example.com"></div>
-<div><label>Affiliate URL</label><input id="affUrl" type="url" placeholder="https://affiliate-link.com"></div>
-<div><label>Logo URL</label><input id="logoUrl" type="url" placeholder="https://example.com/logo.png"></div>
-<div><label>Country</label><input id="country" placeholder="Pakistan, UK, Germany..."></div>
-<div><label>Category</label><select id="categoryId"><option value="">Select Category</option></select></div>
-<div><label>Slug</label><input id="slug" placeholder="nike"></div>
-<div><label>Status</label><select id="status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
-<div class="full"><label>Description</label><textarea id="description" rows="3" placeholder="Store description"></textarea></div>
-<div class="full actions"><button type="submit" id="saveStoreBtn">Save Store</button><button type="button" class="secondary" id="cancelStoreBtn">Cancel</button></div>
-</form></div>
-<div class="panel"><h2>All Stores</h2><div id="storeList" class="grid">Loading stores...</div></div>
-</section>
-
-<section id="couponsSection" class="hidden">
-<div class="panel"><h2>Coupon Management</h2><p><small>Add discount codes and deals for your stores.</small></p>
-<button id="addCouponBtn">+ Add New Coupon</button><div id="couponMessage" class="notice"></div></div>
-<div class="panel hidden" id="couponFormPanel"><h2 id="couponFormHeading">Add New Coupon</h2>
-<form id="couponForm">
-<input type="hidden" id="couponEditId">
-<div><label>Store *</label><select id="couponStoreId" required><option value="">Select Store</option></select></div>
-<div><label>Coupon / Deal Title *</label><input id="couponTitle" required placeholder="Example: 20% Off All Shoes"></div>
-<div><label>Type</label><select id="couponType"><option value="code">Coupon Code</option><option value="deal">Deal (No Code)</option></select></div>
-<div><label>Coupon Code</label><input id="couponCode" placeholder="SAVE20"></div>
-<div><label>Discount</label><input id="couponDiscount" placeholder="20% OFF"></div>
-<div><label>Manual Sort Order (lower number = higher)</label><input id="couponSortOrder" type="number" value="0" step="1"></div>
-<div><label>Featured Deal</label><select id="couponFeatured"><option value="false">No</option><option value="true">Yes — Show First</option></select></div>
-<div><label>Start Date (optional)</label><input id="couponStart" type="date"></div>
-<div><label>Expiry Date (optional)</label><input id="couponEnd" type="date"></div>
-<div><label>Status</label><select id="couponStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
-<div class="full"><label>Affiliate URL (optional)</label><input id="couponUrl" type="url" placeholder="https://affiliate-link.com"></div>
-<div class="full"><label>Description (optional)</label><textarea id="couponDescription" rows="3" placeholder="Coupon details and terms"></textarea></div>
-<div class="full actions"><button type="submit" id="saveCouponBtn">Save Coupon</button><button type="button" class="secondary" id="cancelCouponBtn">Cancel</button></div>
-</form></div>
-<div class="panel"><h2>All Coupons</h2><div class="sortbar"><label for="couponSortView">Sort list:</label><select id="couponSortView"><option value="featured">Featured First</option><option value="discount">Highest Discount</option><option value="latest">Latest Deals</option><option value="manual">Manual Order</option></select></div><small>Manual Order ke liye Move Up / Move Down buttons use karein. Featured deals public website par pehle dikhengi.</small><div id="couponList" class="grid">Open Coupons tab to load coupons.</div></div>
-</section>
-
-<section id="otherSection" class="panel hidden">
-<h2 id="otherHeading">Coming Soon</h2>
-<p id="otherText">This section will be connected after its database structure is checked.</p>
-</section>
-
-<!-- WEBSITE SETTINGS -->
-<section id="websiteSection" class="hidden">
-<div class="panel">
-<h2>Website Settings</h2>
-<p><small>Yahan se About Us, Contact Details aur Social Media links update karein.</small></p>
-<div id="settingsMessage" class="notice"></div>
-<form id="settingsForm">
-<div><label>About Us Heading</label><input id="aboutTitle" placeholder="About Discount Price"></div>
-<div><label>Contact Email</label><input id="contactEmail" type="email" placeholder="support@example.com"></div>
-<div><label>Contact Phone</label><input id="contactPhone" type="text" placeholder="+92 300 1234567"></div>
-<div class="full"><label>About Us Description</label><textarea id="aboutContent" rows="6" placeholder="Write a short introduction about your website..."></textarea></div>
-<div><label>Facebook URL</label><input id="socialFacebook" type="url" placeholder="https://facebook.com/yourpage"></div>
-<div><label>Instagram URL</label><input id="socialInstagram" type="url" placeholder="https://instagram.com/yourpage"></div>
-<div><label>YouTube URL</label><input id="socialYoutube" type="url" placeholder="https://youtube.com/@yourchannel"></div>
-<div><label>TikTok URL</label><input id="socialTiktok" type="url" placeholder="https://tiktok.com/@youraccount"></div>
-<div><label>Pinterest URL</label><input id="socialPinterest" type="url" placeholder="https://pinterest.com/youraccount"></div>
-<div class="full actions"><button type="submit" id="saveSettingsBtn">Save Website Settings</button></div>
-</form>
-</div>
-
-<div class="panel">
-<h2>FAQ Management</h2>
-<p><small>Frequently Asked Questions add, edit aur delete karein. Inactive FAQ public website par show nahi honge.</small></p>
-<div id="faqMessage" class="notice"></div>
-<button id="addFaqBtn">+ Add New FAQ</button>
-</div>
-
-<div class="panel hidden" id="faqFormPanel">
-<h2 id="faqFormHeading">Add New FAQ</h2>
-<form id="faqForm">
-<input type="hidden" id="faqEditId">
-<div class="full"><label>Question *</label><input id="faqQuestion" required placeholder="Example: How do I use a coupon code?"></div>
-<div class="full"><label>Answer *</label><textarea id="faqAnswer" rows="4" required placeholder="Write the answer..."></textarea></div>
-<div><label>Sort Order (lower number appears first)</label><input id="faqSortOrder" type="number" value="0" step="1"></div>
-<div><label>Status</label><select id="faqActive"><option value="true">Active</option><option value="false">Inactive</option></select></div>
-<div class="full actions"><button type="submit" id="saveFaqBtn">Save FAQ</button><button type="button" class="secondary" id="cancelFaqBtn">Cancel</button></div>
-</form>
-</div>
-
-<div class="panel">
-<h2>All FAQs</h2>
-<div id="faqList" class="grid">Open Website Settings to load FAQs.</div>
-</div>
-</section>
-
-</main></section>
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
 <script>
-const client = window.supabase.createClient(
- "https://eyaukiovgugmiyytybdg.supabase.co",
- "sb_publishable_qahiC18UeUqc6qVosbenCw_zKmQ7vb1"
-);
-
-const $ = id => document.getElementById(id);
-
-let stores = [];
-let categories = [];
-let coupons = [];
-let storeCouponCounts = {};
-let faqs = [];
-
-function message(id,text,ok=false){
- const el=$(id);
- el.textContent=text;
- el.style.color=ok?"#38d996":"#ff7777";
-}
-
-function makeSlug(value){
- return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-}
-
-function addText(parent,tag,text,className){
- const el=document.createElement(tag);
- el.textContent=text??"";
- if(className)el.className=className;
- parent.appendChild(el);
- return el;
-}
-
-async function loadCategories(){
- const {data,error}=await client.from("categories")
- .select("id,name,category_type")
- .eq("is_active",true)
- .order("name");
-
- if(error){
-  message("storeMessage","Categories error: "+error.message);
-  return;
- }
-
- categories=data||[];
-
- const dropdown=$("categoryId");
- dropdown.innerHTML='<option value="">Select Category</option>';
-
- categories.forEach(c=>{
-  const o=document.createElement("option");
-  o.value=c.id;
-  o.textContent=(c.category_type||"").toUpperCase()+" - "+c.name;
-  dropdown.appendChild(o);
- });
-}
-
-function showDashboard(){
- $("loginPage").classList.add("hidden");
- $("resetPage").classList.add("hidden");
- $("dashboard").classList.remove("hidden");
-
- loadCategories();
- loadStores();
- loadStoresForCoupons();
-}
-
-function showLogin(){
- $("dashboard").classList.add("hidden");
- $("resetPage").classList.add("hidden");
- $("loginPage").classList.remove("hidden");
-}
-
-$("loginForm").addEventListener("submit",async e=>{
- e.preventDefault();
-
- const {error}=await client.auth.signInWithPassword({
-  email:$("email").value.trim(),
-  password:$("password").value
- });
-
- if(error){
-  message("loginMessage",error.message);
-  return;
- }
-
- message("loginMessage","Login successful!",true);
- showDashboard();
-});
-
-$("forgotBtn").onclick=async()=>{
- const email=$("email").value.trim();
-
- if(!email){
-  message("loginMessage","Pehle Admin Email enter karein.");
-  return;
- }
-
- const {error}=await client.auth.resetPasswordForEmail(email,{
-  redirectTo:"https://discountprice.github.io/discount-price/"
- });
-
- message("loginMessage",error?error.message:"Recovery email sent. Inbox check karein.",!error);
-};
-
-client.auth.onAuthStateChange((event,session)=>{
- if(event==="PASSWORD_RECOVERY"&&session){
-  $("loginPage").classList.add("hidden");
-  $("resetPage").classList.remove("hidden");
- }
-});
-
-$("resetForm").addEventListener("submit",async e=>{
- e.preventDefault();
-
- const p=$("newPassword").value;
-
- if(p!==$("confirmPassword").value){
-  message("resetMessage","Passwords match nahi karte.");
-  return;
- }
-
- const {error}=await client.auth.updateUser({password:p});
-
- if(error){
-  message("resetMessage",error.message);
-  return;
- }
-
- await client.auth.signOut();
-
- message("resetMessage","Password updated. Ab login karein.",true);
- showLogin();
-});
-
-$("logoutBtn").onclick=async()=>{
- await client.auth.signOut();
- stores=[];
- showLogin();
-};
-
-/* STORE MANAGEMENT */
-function resetStoreForm(){
- $("storeForm").reset();
- $("editId").value="";
- $("formHeading").textContent="Add New Store";
- $("saveStoreBtn").textContent="Save Store";
- $("formPanel").classList.add("hidden");
-}
-
-$("addStoreBtn").onclick=()=>{
- resetStoreForm();
- $("formPanel").classList.remove("hidden");
-};
-
-$("cancelStoreBtn").onclick=resetStoreForm;
-
-$("storeName").addEventListener("input",()=>{
- if(!$("editId").value){
-  $("slug").value=makeSlug($("storeName").value);
- }
-});
-
-$("storeForm").addEventListener("submit",async e=>{
- e.preventDefault();
-
- const id=$("editId").value;
-
- const record={
-  name:$("storeName").value.trim(),
-  slug:$("slug").value.trim()||makeSlug($("storeName").value),
-  web_url:$("webUrl").value.trim()||null,
-  aff_url:$("affUrl").value.trim()||null,
-  logo_url:$("logoUrl").value.trim()||null,
-  description:$("description").value.trim()||null,
-  country:$("country").value.trim()||null,
-  category_id:$("categoryId").value||null,
-  status:$("status").value
- };
-
- $("saveStoreBtn").disabled=true;
-
- const result=id
-  ?await client.from("stores").update(record).eq("id",id)
-  :await client.from("stores").insert(record);
-
- $("saveStoreBtn").disabled=false;
-
- if(result.error){
-  message("storeMessage","Error: "+result.error.message);
-  return;
- }
-
- message("storeMessage",id?"Store updated successfully!":"Store added successfully!",true);
-
- resetStoreForm();
- await loadStores();
- await loadStoresForCoupons();
-});
-
-async function loadStores(){
- $("storeList").textContent="Loading stores...";
-
- const {data,error}=await client.from("stores")
- .select("id,name,slug,category_id,web_url,logo_url,description,aff_url,country,status,created_at")
- .order("created_at",{ascending:false});
-
- if(error){
-  $("storeList").textContent="Could not load stores: "+error.message;
-  return;
- }
-
- stores=data||[];
- storeCouponCounts={};
-
- const {data:couponRows,error:couponError}=await client.from("coupons").select("store_id");
-
- if(!couponError){
-  (couponRows||[]).forEach(c=>{
-   storeCouponCounts[c.store_id]=(storeCouponCounts[c.store_id]||0)+1;
-  });
- }
-
- renderStores();
-}
-
-function renderStores(){
- const list=$("storeList");
- list.replaceChildren();
-
- const term=$("searchStore").value.toLowerCase();
-
- const filtered=stores.filter(s=>
-  (s.name||"").toLowerCase().includes(term)||
-  (s.country||"").toLowerCase().includes(term)
- );
-
- if(!filtered.length){
-  addText(list,"p","No stores found.");
-  return;
- }
-
- filtered.forEach(s=>{
-  const card=document.createElement("article");
-  card.className="store";
-
-  if(s.logo_url){
-   const img=document.createElement("img");
-   img.src=s.logo_url;
-   img.alt=(s.name||"")+" logo";
-   img.onerror=()=>img.remove();
-   card.appendChild(img);
-  }
-
-  addText(card,"h3",s.name||"Unnamed Store");
-  addText(card,"p","Country: "+(s.country||"Not set"));
-  addText(card,"p","Status: "+(s.status||"Not set"));
-  addText(card,"p","Number of Coupons: "+(storeCouponCounts[s.id]||0));
-
-  if(s.web_url){
-   const a=addText(card,"a","Store Website");
-   a.href=s.web_url;
-   a.target="_blank";
-   a.rel="noopener noreferrer";
-  }
-
-  if(s.aff_url){
-   const a=addText(card,"a","Affiliate Link");
-   a.href=s.aff_url;
-   a.target="_blank";
-   a.rel="noopener noreferrer";
-  }
-
-  addText(card,"p",s.description||"");
-
-  const actions=document.createElement("div");
-  actions.className="actions";
-
-  const edit=document.createElement("button");
-  edit.textContent="Edit";
-  edit.onclick=()=>editStore(s);
-  actions.appendChild(edit);
-
-  const count=document.createElement("a");
-  count.textContent="Number of Coupons ("+(storeCouponCounts[s.id]||0)+")";
-  count.href="./?store="+encodeURIComponent(s.slug||s.id);
-  count.target="_blank";
-  count.rel="noopener noreferrer";
-  count.style.display="inline-block";
-  count.style.background="#475569";
-  count.style.color="white";
-  count.style.textDecoration="none";
-  count.style.borderRadius="7px";
-  count.style.padding="12px 16px";
-  count.style.fontWeight="bold";
-  actions.appendChild(count);
-
-  const visit=document.createElement("a");
-  visit.textContent="Visit";
-  visit.href="./?store="+encodeURIComponent(s.slug||s.id);
-  visit.target="_blank";
-  visit.rel="noopener noreferrer";
-  visit.style.display="inline-block";
-  visit.style.background="#16a875";
-  visit.style.color="white";
-  visit.style.textDecoration="none";
-  visit.style.borderRadius="7px";
-  visit.style.padding="12px 16px";
-  visit.style.fontWeight="bold";
-  actions.appendChild(visit);
-
-  const del=document.createElement("button");
-  del.textContent="Delete";
-  del.className="danger";
-  del.onclick=()=>deleteStore(s.id,s.name);
-  actions.appendChild(del);
-
-  card.appendChild(actions);
-  list.appendChild(card);
- });
-}
-
-function editStore(s){
- $("editId").value=s.id;
- $("storeName").value=s.name||"";
- $("slug").value=s.slug||"";
- $("webUrl").value=s.web_url||"";
- $("affUrl").value=s.aff_url||"";
- $("logoUrl").value=s.logo_url||"";
- $("description").value=s.description||"";
- $("country").value=s.country||"";
- $("categoryId").value=s.category_id||"";
- $("status").value=s.status||"active";
-
- $("formHeading").textContent="Edit Store";
- $("saveStoreBtn").textContent="Update Store";
- $("formPanel").classList.remove("hidden");
-
- window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function deleteStore(id,name){
- if(!confirm("Delete "+(name||"this store")+"? This cannot be undone."))return;
-
- const {error}=await client.from("stores").delete().eq("id",id);
-
- if(error){
-  message("storeMessage","Delete error: "+error.message);
-  return;
- }
-
- message("storeMessage","Store deleted.",true);
- await loadStores();
- await loadStoresForCoupons();
-}
-
-$("searchStore").addEventListener("input",renderStores);
-
-/* COUPON MANAGEMENT */
-async function loadStoresForCoupons(){
- const {data,error}=await client.from("stores")
- .select("id,name")
- .order("name");
-
- if(error){
-  message("couponMessage","Could not load stores: "+error.message);
-  return;
- }
-
- const select=$("couponStoreId");
- const current=select.value;
-
- select.innerHTML='<option value="">Select Store</option>';
-
- (data||[]).forEach(s=>{
-  const o=document.createElement("option");
-  o.value=s.id;
-  o.textContent=s.name;
-  select.appendChild(o);
- });
-
- if(current)select.value=current;
-}
-
-function resetCouponForm(){
- $("couponForm").reset();
- $("couponEditId").value="";
- $("couponFormHeading").textContent="Add New Coupon";
- $("saveCouponBtn").textContent="Save Coupon";
- $("couponFormPanel").classList.add("hidden");
-}
-
-$("addCouponBtn").onclick=async()=>{
- await loadStoresForCoupons();
- resetCouponForm();
- $("couponFormPanel").classList.remove("hidden");
-};
-
-$("cancelCouponBtn").onclick=resetCouponForm;
-
-$("couponType").addEventListener("change",()=>{
- $("couponCode").disabled=$("couponType").value==="deal";
-
- if($("couponType").value==="deal"){
-  $("couponCode").value="";
- }
-});
-
-$("couponForm").addEventListener("submit",async e=>{
- e.preventDefault();
-
- const id=$("couponEditId").value;
-
- const start=$("couponStart").value
-  ?new Date($("couponStart").value+"T00:00:00").toISOString()
-  :null;
-
- const end=$("couponEnd").value
-  ?new Date($("couponEnd").value+"T23:59:59").toISOString()
-  :null;
-
- const record={
-  store_id:$("couponStoreId").value,
-  title:$("couponTitle").value.trim(),
-  coupon_type:$("couponType").value,
-  code:$("couponCode").value.trim()||null,
-  discount:$("couponDiscount").value.trim()||null,
-  is_featured:$("couponFeatured").value==="true",
-  sort_order:Number($("couponSortOrder").value)||0,
-  description:$("couponDescription").value.trim()||null,
-  affiliate_url:$("couponUrl").value.trim()||null,
-  start_date:start,
-  end_date:end,
-  status:$("couponStatus").value
- };
-
- $("saveCouponBtn").disabled=true;
-
- const result=id
-  ?await client.from("coupons").update(record).eq("id",id)
-  :await client.from("coupons").insert(record);
-
- $("saveCouponBtn").disabled=false;
-
- if(result.error){
-  message("couponMessage","Error: "+result.error.message);
-  return;
- }
-
- message("couponMessage",id?"Coupon updated successfully!":"Coupon added successfully!",true);
-
- resetCouponForm();
- await loadCoupons();
-});
-
-async function loadCoupons(){
- $("couponList").textContent="Loading coupons...";
-
- const {data,error}=await client.from("coupons")
- .select("id,store_id,title,coupon_type,code,discount,is_featured,sort_order,description,affiliate_url,start_date,end_date,status,created_at")
- .order("created_at",{ascending:false});
-
- if(error){
-  $("couponList").textContent="Could not load coupons: "+error.message;
-  message("couponMessage","Coupons error: "+error.message);
-  return;
- }
-
- coupons=data||[];
- renderCoupons();
-}
-
-function renderCoupons(){
- const list=$("couponList");
- list.replaceChildren();
-
- if(!coupons.length){
-  addText(list,"p","No coupons added yet.");
-  return;
- }
-
- const mode=$("couponSortView")?.value||"featured";
-
- const ordered=[...coupons].sort((a,b)=>{
-  if(mode==="discount")return discountNumber(b.discount)-discountNumber(a.discount);
-  if(mode==="latest")return new Date(b.created_at||0)-new Date(a.created_at||0);
-  if(mode==="manual")return (a.sort_order||0)-(b.sort_order||0)||new Date(b.created_at||0)-new Date(a.created_at||0);
-
-  return Number(!!b.is_featured)-Number(!!a.is_featured)||
-   (a.sort_order||0)-(b.sort_order||0)||
-   new Date(b.created_at||0)-new Date(a.created_at||0);
- });
-
- ordered.forEach((c,index)=>{
-  const card=document.createElement("article");
-  card.className="coupon";
-
-  const store=stores.find(s=>s.id===c.store_id);
-
-  addText(card,"h3",c.title);
-  addText(card,"p","Store: "+(store?.name||"Store"));
-  addText(card,"p","Discount: "+(c.discount||"Not set"));
-  addText(card,"p","Type: "+(c.coupon_type==="code"?"Coupon Code":"Deal"));
-
-  if(c.code)addText(card,"p","Code: "+c.code);
-
-  addText(card,"p","Status: "+c.status);
-
-  if(c.is_featured)addText(card,"p","★ FEATURED","featured");
-
-  addText(card,"p","Sort Order: "+(c.sort_order??0));
-
-  if(c.end_date){
-   addText(card,"p","Expiry: "+new Date(c.end_date).toLocaleDateString());
-  }
-
-  if(c.description)addText(card,"p",c.description);
-
-  const actions=document.createElement("div");
-  actions.className="actions";
-
-  const edit=document.createElement("button");
-  edit.textContent="Edit";
-  edit.onclick=()=>editCoupon(c);
-  actions.appendChild(edit);
-
-  const up=document.createElement("button");
-  up.textContent="Move Up";
-  up.className="secondary";
-  up.disabled=index===0;
-  up.onclick=()=>moveCoupon(c.id,-1,ordered);
-  actions.appendChild(up);
-
-  const down=document.createElement("button");
-  down.textContent="Move Down";
-  down.className="secondary";
-  down.disabled=index===ordered.length-1;
-  down.onclick=()=>moveCoupon(c.id,1,ordered);
-  actions.appendChild(down);
-
-  const del=document.createElement("button");
-  del.textContent="Delete";
-  del.className="danger";
-  del.onclick=()=>deleteCoupon(c.id,c.title);
-  actions.appendChild(del);
-
-  card.appendChild(actions);
-  list.appendChild(card);
- });
-}
-
-function editCoupon(c){
- $("couponEditId").value=c.id;
- $("couponFeatured").value=String(!!c.is_featured);
- $("couponSortOrder").value=c.sort_order??0;
- $("couponStoreId").value=c.store_id;
- $("couponTitle").value=c.title||"";
- $("couponType").value=c.coupon_type||"code";
- $("couponCode").value=c.code||"";
- $("couponCode").disabled=c.coupon_type==="deal";
- $("couponDiscount").value=c.discount||"";
- $("couponDescription").value=c.description||"";
- $("couponUrl").value=c.affiliate_url||"";
- $("couponStatus").value=c.status||"active";
-
- $("couponStart").value=c.start_date?new Date(c.start_date).toISOString().slice(0,10):"";
- $("couponEnd").value=c.end_date?new Date(c.end_date).toISOString().slice(0,10):"";
-
- $("couponFormHeading").textContent="Edit Coupon";
- $("saveCouponBtn").textContent="Update Coupon";
- $("couponFormPanel").classList.remove("hidden");
-
- window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function discountNumber(value){
- const m=String(value||"").match(/[0-9]+(?:\.[0-9]+)?/);
- return m?Number(m[0]):0;
-}
-
-async function moveCoupon(id,direction,ordered){
- const next=[...ordered];
- const index=next.findIndex(x=>x.id===id);
- const target=index+direction;
-
- if(target<0||target>=next.length)return;
-
- [next[index],next[target]]=[next[target],next[index]];
-
- const updates=await Promise.all(
-  next.map((item,i)=>
-   client.from("coupons").update({sort_order:(i+1)*10}).eq("id",item.id)
-  )
- );
-
- const err=updates.find(x=>x.error)?.error;
-
- if(err){
-  message("couponMessage","Sorting error: "+err.message);
-  return;
- }
-
- await loadCoupons();
- message("couponMessage","Deal order updated.",true);
-}
-
-$("couponSortView").addEventListener("change",renderCoupons);
-
-async function deleteCoupon(id,title){
- if(!confirm("Delete "+(title||"this coupon")+"? This cannot be undone."))return;
-
- const {error}=await client.from("coupons").delete().eq("id",id);
-
- if(error){
-  message("couponMessage","Delete error: "+error.message);
-  return;
- }
-
- message("couponMessage","Coupon deleted.",true);
- await loadCoupons();
-}
-
-/* WEBSITE SETTINGS: ABOUT, CONTACT AND SOCIAL LINKS */
-async function loadWebsiteSettings(){
- message("settingsMessage","Loading website settings...",true);
-
- const {data,error}=await client.from("website_settings")
-  .select("id,about_title,about_content,contact_email,contact_phone,social_links")
-  .eq("id","main")
-  .maybeSingle();
-
- if(error){
-  message("settingsMessage","Could not load settings: "+error.message);
-  return;
- }
-
- const settings=data||{};
- const social=settings.social_links&&typeof settings.social_links==="object"
-  ?settings.social_links:{};
-
- $("aboutTitle").value=settings.about_title||"";
- $("aboutContent").value=settings.about_content||"";
- $("contactEmail").value=settings.contact_email||"";
- $("contactPhone").value=settings.contact_phone||"";
- $("socialFacebook").value=social.facebook||"";
- $("socialInstagram").value=social.instagram||"";
- $("socialYoutube").value=social.youtube||"";
- $("socialTiktok").value=social.tiktok||"";
- $("socialPinterest").value=social.pinterest||"";
-
- message("settingsMessage","Website settings loaded.",true);
-}
-
-$("settingsForm").addEventListener("submit",async e=>{
- e.preventDefault();
-
- const record={
-  id:"main",
-  about_title:$("aboutTitle").value.trim(),
-  about_content:$("aboutContent").value.trim(),
-  contact_email:$("contactEmail").value.trim(),
-  contact_phone:$("contactPhone").value.trim(),
-  social_links:{
-   facebook:$("socialFacebook").value.trim(),
-   instagram:$("socialInstagram").value.trim(),
-   youtube:$("socialYoutube").value.trim(),
-   tiktok:$("socialTiktok").value.trim(),
-   pinterest:$("socialPinterest").value.trim()
-  },
-  updated_at:new Date().toISOString()
- };
-
- $("saveSettingsBtn").disabled=true;
- message("settingsMessage","Saving website settings...",true);
-
- const {error}=await client.from("website_settings")
-  .upsert(record,{onConflict:"id"});
-
- $("saveSettingsBtn").disabled=false;
-
- if(error){
-  message("settingsMessage","Save error: "+error.message);
-  return;
- }
-
- message("settingsMessage","Website settings saved successfully!",true);
-});
+"use strict";
+const db=window.supabase.createClient("https://eyaukiovgugmiyytybdg.supabase.co","sb_publishable_qahiC18UeUqc6qVosbenCw_zKmQ7vb1");
+const $=id=>document.getElementById(id);
+const state={stores:[],coupons:[],categories:[],faqs:[],page:"dashboard",storePage:1,couponPage:1};
+const titles={dashboard:"Dashboard",stores:"Stores",coupons:"Coupons",categories:"Categories",settings:"Website Settings",faqs:"FAQs",campaigns:"Promo Campaigns",analytics:"Promo Analytics"};
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function slug(v){return String(v||"").toLowerCase().trim().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+function date(v){if(!v)return "—";const d=new Date(v);return isNaN(d)?"—":new Intl.DateTimeFormat(undefined,{day:"2-digit",month:"short",year:"numeric"}).format(d);}
+function msg(id,text,type=""){const el=$(id);if(el){el.className="message"+(type?" "+type:"");el.textContent=text;}}
+let toastTimer;
+function notify(text,error=false){const el=$("toast");el.textContent=text;el.className="toast"+(error?" error":"");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.add("hidden"),3500);}
+function busy(id,on,text="Saving…"){const b=$(id);if(!b)return;if(on){b.dataset.old=b.textContent;b.disabled=true;b.textContent=text;}else{b.disabled=false;b.textContent=b.dataset.old||b.textContent;delete b.dataset.old;}}
+function showLogin(){$("app").classList.add("hidden");$("reset-screen").classList.add("hidden");$("login-screen").classList.remove("hidden");}
+async function showApp(){$("login-screen").classList.add("hidden");$("reset-screen").classList.add("hidden");$("app").classList.remove("hidden");await loadAll();go("dashboard");}
+$("login-form").addEventListener("submit",async e=>{e.preventDefault();busy("login-submit",true,"Signing in…");const {error}=await db.auth.signInWithPassword({email:$("login-email").value.trim(),password:$("login-password").value});busy("login-submit",false);if(error){msg("login-message",error.message,"error");return;}await showApp();});
+$("forgot-button").addEventListener("click",async()=>{const email=$("login-email").value.trim();if(!email){msg("login-message","Enter your admin email first.","error");return;}const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:"https://discountprice.github.io/discount-price/"});msg("login-message",error?error.message:"Recovery email sent. Check your inbox.",error?"error":"success");});
+$("reset-form").addEventListener("submit",async e=>{e.preventDefault();const p=$("new-password").value;if(p!==$("confirm-password").value){msg("reset-message","Passwords do not match.","error");return;}const {error}=await db.auth.updateUser({password:p});if(error){msg("reset-message",error.message,"error");return;}await db.auth.signOut();msg("reset-message","Password updated. Sign in again.","success");showLogin();});
+$("logout-button").addEventListener("click",async()=>{await db.auth.signOut();showLogin();});
+db.auth.onAuthStateChange((event,session)=>{if(event==="PASSWORD_RECOVERY"&&session){$("login-screen").classList.add("hidden");$("reset-screen").classList.remove("hidden");}});
+function go(page){if(!titles[page])return;state.page=page;document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));$("page-"+page).classList.remove("hidden");document.querySelectorAll(".nav-item").forEach(x=>x.classList.toggle("active",x.dataset.page===page));$("top-title").textContent="Workspace / "+titles[page];document.body.classList.remove("menu-open");if(page==="dashboard")renderDashboard();if(page==="stores")renderStores();if(page==="coupons")renderCoupons();if(page==="categories")renderCategories();if(page==="faqs")renderFaqs();if(page==="settings")loadSettings();window.scrollTo({top:0,behavior:"instant"});}
+document.querySelectorAll(".nav-item").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
+$("mobile-menu").addEventListener("click",()=>document.body.classList.toggle("menu-open"));$("overlay").addEventListener("click",()=>document.body.classList.remove("menu-open"));
+function theme(t){document.documentElement.dataset.theme=t;$("theme-button").textContent=t==="dark"?"☀":"☾";try{localStorage.setItem("dp-theme",t);}catch(e){}}
+try{theme(localStorage.getItem("dp-theme")||"light");}catch(e){theme("light");}
+$("theme-button").addEventListener("click",()=>theme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
+
+async function loadAll(){await Promise.all([loadCategories(),loadStores(),loadCoupons(),loadFaqs()]);updateCounts();renderDashboard();}
+function updateCounts(){$("store-count").textContent=state.stores.length;$("coupon-count").textContent=state.coupons.length;}
+async function loadCategories(){const {data,error}=await db.from("categories").select("id,name,slug,description,is_active,created_at,category_type").order("name");if(error){notify("Categories: "+error.message,true);return;}state.categories=data||[];const opts=state.categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");$("store-category").innerHTML='<option value="">No category</option>'+opts;$("store-category-filter").innerHTML='<option value="">Any category</option>'+opts;if(state.page==="categories")renderCategories();}
+async function loadStores(){const {data,error}=await db.from("stores").select("id,name,slug,category_id,web_url,logo_url,description,aff_url,country,status,created_at").order("created_at",{ascending:false});if(error){$("stores-body").innerHTML=`<tr><td colspan="7" class="empty">Could not load stores: ${esc(error.message)}</td></tr>`;notify("Stores: "+error.message,true);return;}state.stores=data||[];updateCounts();if(state.page==="stores")renderStores();}
+async function loadCoupons(){const {data,error}=await db.from("coupons").select("id,store_id,title,coupon_type,code,discount,is_featured,sort_order,description,affiliate_url,start_date,end_date,status,created_at").order("created_at",{ascending:false});if(error){$("coupons-body").innerHTML=`<tr><td colspan="8" class="empty">Could not load coupons: ${esc(error.message)}</td></tr>`;notify("Coupons: "+error.message,true);return;}state.coupons=data||[];updateCounts();if(state.page==="coupons")renderCoupons();}
+async function loadFaqs(){const {data,error}=await db.from("faqs").select("id,question,answer,sort_order,is_active,created_at").order("sort_order").order("created_at",{ascending:false});if(error){$("faq-list").innerHTML=`<div class="empty">Could not load FAQs: ${esc(error.message)}</div>`;return;}state.faqs=data||[];if(state.page==="faqs")renderFaqs();}
+function renderDashboard(){$("stat-stores").textContent=state.stores.length;$("stat-active").textContent=state.stores.filter(s=>s.status==="active").length;$("stat-coupons").textContent=state.coupons.length;$("stat-faqs").textContent=state.faqs.filter(f=>f.is_active).length;const recent=[...state.stores].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,6);$("recent-stores").innerHTML=recent.length?recent.map(s=>{const c=state.categories.find(x=>String(x.id)===String(s.category_id));return `<div class="list-row"><div class="logo">${s.logo_url?`<img src="${esc(s.logo_url)}" alt="" onerror="this.remove()">`:esc((s.name||"S").charAt(0).toUpperCase())}</div><div class="grow"><strong>${esc(s.name)}</strong><small>${esc(c?.name||s.country||s.slug||"Store")}</small></div><span class="pill ${s.status==="active"?"active":"inactive"}">${esc((s.status||"unknown").toUpperCase())}</span></div>`;}).join(""):'<div class="empty">No stores added yet.</div>';}
+
+/* STORE FILTERS + TABLE PAGINATION */
+function filteredStores(){const q=$("store-search").value.toLowerCase().trim(),st=$("store-status-filter").value,cat=$("store-category-filter").value;return state.stores.filter(s=>(!q||(s.name||"").toLowerCase().includes(q)||(s.slug||"").toLowerCase().includes(q))&&(!st||s.status===st)&&(!cat||String(s.category_id||"")===String(cat)));}
+function renderStores(){const rows=filteredStores(),size=Number($("stores-page-size").value)||25,max=Math.max(1,Math.ceil(rows.length/size));state.storePage=Math.min(state.storePage,max);const start=(state.storePage-1)*size,subset=rows.slice(start,start+size);$("stores-body").innerHTML=subset.length?subset.map(s=>{const cat=state.categories.find(c=>String(c.id)===String(s.category_id)),num=state.coupons.filter(c=>String(c.store_id)===String(s.id)).length,logo=s.logo_url?`<img src="${esc(s.logo_url)}" alt="" onerror="this.remove()">`:esc((s.name||"S").charAt(0).toUpperCase());return `<tr><td><div class="logo">${logo}</div></td><td>${cat?`<span class="pill info">${esc(cat.name)}</span>`:'<span class="muted">None</span>'}</td><td><div class="name-cell"><strong>${esc(s.name)}</strong><span>${esc(s.slug||"")}</span></div></td><td><span class="pill ${s.status==="active"?"active":"inactive"}">${esc((s.status||"unknown").toUpperCase())}</span></td><td><button class="btn btn-outline btn-sm" data-store-coupons="${esc(s.id)}">${num}</button></td><td>${date(s.created_at)}</td><td><div class="row-actions"><a class="btn btn-quiet btn-sm" href="${esc(s.web_url||"#")}" ${s.web_url?'target="_blank" rel="noopener"':'aria-disabled="true"'}>Visit ↗</a><button class="btn btn-outline btn-sm" data-edit-store="${esc(s.id)}">Edit</button><button class="btn btn-danger btn-sm" data-delete-store="${esc(s.id)}">Delete</button></div></td></tr>`;}).join(""):'<tr><td colspan="7" class="empty">No stores match your filters.</td></tr>';$("stores-page-info").textContent=rows.length?`Showing ${start+1}–${Math.min(start+size,rows.length)} of ${rows.length}`:"Showing 0 stores";$("stores-prev").disabled=state.storePage<=1;$("stores-next").disabled=state.storePage>=max;}
+function resetStore(){$("store-form").reset();$("store-id").value="";$("store-status").value="active";$("store-form-title").textContent="Add new store";$("save-store").textContent="Save store";$("store-form-card").classList.add("hidden");}
+function openStore(s){resetStore();if(s){$("store-id").value=s.id;$("store-name").value=s.name||"";$("store-slug").value=s.slug||"";$("store-url").value=s.web_url||"";$("store-aff-url").value=s.aff_url||"";$("store-logo").value=s.logo_url||"";$("store-country").value=s.country||"";$("store-category").value=s.category_id||"";$("store-status").value=s.status||"active";$("store-description").value=s.description||"";$("store-form-title").textContent="Edit store";$("save-store").textContent="Update store";}$("store-form-card").classList.remove("hidden");$("store-form-card").scrollIntoView({behavior:"smooth"});}
+$("new-store").onclick=()=>openStore(null);$("cancel-store").onclick=resetStore;
+$("store-name").addEventListener("input",()=>{if(!$("store-id").value)$("store-slug").value=slug($("store-name").value);});
+$("store-form").addEventListener("submit",async e=>{e.preventDefault();const id=$("store-id").value,record={name:$("store-name").value.trim(),slug:$("store-slug").value.trim()||slug($("store-name").value),web_url:$("store-url").value.trim()||null,aff_url:$("store-aff-url").value.trim()||null,logo_url:$("store-logo").value.trim()||null,country:$("store-country").value.trim()||null,category_id:$("store-category").value||null,status:$("store-status").value,description:$("store-description").value.trim()||null};busy("save-store",true);const result=id?await db.from("stores").update(record).eq("id",id):await db.from("stores").insert(record);busy("save-store",false);if(result.error){msg("stores-message",result.error.message,"error");return;}resetStore();notify(id?"Store updated.":"Store added.");await loadStores();renderDashboard();});
+$("stores-body").addEventListener("click",async e=>{const edit=e.target.closest("[data-edit-store]"),del=e.target.closest("[data-delete-store]"),coupons=e.target.closest("[data-store-coupons]");if(edit){const s=state.stores.find(x=>String(x.id)===edit.dataset.editStore);if(s)openStore(s);}if(del){const s=state.stores.find(x=>String(x.id)===del.dataset.deleteStore);if(s&&confirm(`Delete "${s.name}"? This cannot be undone.`)){const {error}=await db.from("stores").delete().eq("id",s.id);if(error){msg("stores-message",error.message,"error");return;}notify("Store deleted.");await loadStores();await loadCoupons();renderDashboard();}}if(coupons){const s=state.stores.find(x=>String(x.id)===coupons.dataset.storeCoupons);go("coupons");$("coupon-search").value=s?.name||"";renderCoupons();}});
+["store-search","store-status-filter","store-category-filter","stores-page-size"].forEach(id=>$(id).addEventListener(id==="store-search"?"input":"change",()=>{state.storePage=1;renderStores();}));
+$("stores-prev").onclick=()=>{state.storePage=Math.max(1,state.storePage-1);renderStores();};$("stores-next").onclick=()=>{state.storePage++;renderStores();};
+
+/* COUPONS CRUD */
+function disc(v){const m=String(v||"").match(/\d+(?:\.\d+)?/);return m?Number(m[0]):0;}
+function filteredCoupons(){const q=$("coupon-search").value.toLowerCase().trim(),st=$("coupon-status-filter").value,rows=state.coupons.filter(c=>{const s=state.stores.find(x=>String(x.id)===String(c.store_id));return(!q||(c.title||"").toLowerCase().includes(q)||(c.code||"").toLowerCase().includes(q)||(s?.name||"").toLowerCase().includes(q))&&(!st||c.status===st);});const mode=$("coupon-sort-view").value;rows.sort((a,b)=>mode==="latest"?new Date(b.created_at||0)-new Date(a.created_at||0):mode==="discount"?disc(b.discount)-disc(a.discount):mode==="manual"?(Number(a.sort_order)||0)-(Number(b.sort_order)||0):Number(!!b.is_featured)-Number(!!a.is_featured)||(Number(a.sort_order)||0)-(Number(b.sort_order)||0));return rows;}
+function renderCoupons(){const rows=filteredCoupons(),size=Number($("coupons-page-size").value)||25,max=Math.max(1,Math.ceil(rows.length/size));state.couponPage=Math.min(state.couponPage,max);const start=(state.couponPage-1)*size,subset=rows.slice(start,start+size);$("coupons-body").innerHTML=subset.length?subset.map(c=>{const s=state.stores.find(x=>String(x.id)===String(c.store_id));return `<tr><td><div class="name-cell"><strong>${esc(c.title)}</strong><span>Order: ${Number(c.sort_order)||0}</span></div></td><td>${esc(s?.name||"Unknown store")}</td><td>${c.coupon_type==="code"?"Coupon code":"Deal"}${c.code?`<div class="small">${esc(c.code)}</div>`:""}</td><td><strong>${esc(c.discount||"—")}</strong></td><td><span class="pill ${c.status==="active"?"active":"inactive"}">${esc((c.status||"unknown").toUpperCase())}</span></td><td>${c.is_featured?'<span class="pill info">FEATURED</span>':"—"}</td><td>${date(c.end_date)}</td><td><div class="row-actions"><button class="btn btn-outline btn-sm" data-edit-coupon="${esc(c.id)}">Edit</button><button class="btn btn-danger btn-sm" data-delete-coupon="${esc(c.id)}">Delete</button></div></td></tr>`;}).join(""):'<tr><td colspan="8" class="empty">No coupons match your filters.</td></tr>';$("coupons-page-info").textContent=rows.length?`Showing ${start+1}–${Math.min(start+size,rows.length)} of ${rows.length}`:"Showing 0 coupons";$("coupons-prev").disabled=state.couponPage<=1;$("coupons-next").disabled=state.couponPage>=max;}
+function fillCouponStores(){$("coupon-store").innerHTML='<option value="">Select store</option>'+state.stores.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("");}
+function resetCoupon(){$("coupon-form").reset();$("coupon-id").value="";$("coupon-sort").value="0";$("coupon-status").value="active";$("coupon-featured").value="false";$("coupon-code").disabled=false;$("coupon-form-title").textContent="Add new coupon";$("save-coupon").textContent="Save coupon";$("coupon-form-card").classList.add("hidden");}
+function openCoupon(c){fillCouponStores();resetCoupon();if(c){$("coupon-id").value=c.id;$("coupon-store").value=c.store_id||"";$("coupon-title").value=c.title||"";$("coupon-type").value=c.coupon_type||"code";$("coupon-code").value=c.code||"";$("coupon-code").disabled=c.coupon_type==="deal";$("coupon-discount").value=c.discount||"";$("coupon-sort").value=c.sort_order??0;$("coupon-featured").value=String(!!c.is_featured);$("coupon-status").value=c.status||"active";$("coupon-start").value=c.start_date?new Date(c.start_date).toISOString().slice(0,10):"";$("coupon-end").value=c.end_date?new Date(c.end_date).toISOString().slice(0,10):"";$("coupon-aff-url").value=c.affiliate_url||"";$("coupon-description").value=c.description||"";$("coupon-form-title").textContent="Edit coupon";$("save-coupon").textContent="Update coupon";}$("coupon-form-card").classList.remove("hidden");$("coupon-form-card").scrollIntoView({behavior:"smooth"});}
+$("new-coupon").onclick=()=>{fillCouponStores();openCoupon(null);};$("cancel-coupon").onclick=resetCoupon;
+$("coupon-type").onchange=()=>{const deal=$("coupon-type").value==="deal";$("coupon-code").disabled=deal;if(deal)$("coupon-code").value="";};
+$("coupon-form").addEventListener("submit",async e=>{e.preventDefault();const id=$("coupon-id").value,start=$("coupon-start").value?new Date($("coupon-start").value+"T00:00:00").toISOString():null,end=$("coupon-end").value?new Date($("coupon-end").value+"T23:59:59").toISOString():null,record={store_id:$("coupon-store").value,title:$("coupon-title").value.trim(),coupon_type:$("coupon-type").value,code:$("coupon-code").value.trim()||null,discount:$("coupon-discount").value.trim()||null,sort_order:Number($("coupon-sort").value)||0,is_featured:$("coupon-featured").value==="true",status:$("coupon-status").value,start_date:start,end_date:end,affiliate_url:$("coupon-aff-url").value.trim()||null,description:$("coupon-description").value.trim()||null};busy("save-coupon",true);const result=id?await db.from("coupons").update(record).eq("id",id):await db.from("coupons").insert(record);busy("save-coupon",false);if(result.error){msg("coupons-message",result.error.message,"error");return;}resetCoupon();notify(id?"Coupon updated.":"Coupon added.");await loadCoupons();renderDashboard();});
+$("coupons-body").addEventListener("click",async e=>{const edit=e.target.closest("[data-edit-coupon]"),del=e.target.closest("[data-delete-coupon]");if(edit){const c=state.coupons.find(x=>String(x.id)===edit.dataset.editCoupon);if(c)openCoupon(c);}if(del){const c=state.coupons.find(x=>String(x.id)===del.dataset.deleteCoupon);if(c&&confirm(`Delete "${c.title}"? This cannot be undone.`)){const {error}=await db.from("coupons").delete().eq("id",c.id);if(error){msg("coupons-message",error.message,"error");return;}notify("Coupon deleted.");await loadCoupons();renderDashboard();}}});
+["coupon-search","coupon-status-filter","coupon-sort-view","coupons-page-size"].forEach(id=>$(id).addEventListener(id==="coupon-search"?"input":"change",()=>{state.couponPage=1;renderCoupons();}));
+$("coupons-prev").onclick=()=>{state.couponPage=Math.max(1,state.couponPage-1);renderCoupons();};$("coupons-next").onclick=()=>{state.couponPage++;renderCoupons();};
+
+/* CATEGORIES */
+function renderCategories(){const q=$("category-search").value.toLowerCase().trim(),rows=state.categories.filter(c=>(c.name||"").toLowerCase().includes(q)||(c.slug||"").toLowerCase().includes(q));$("categories-body").innerHTML=rows.length?rows.map(c=>`<tr><td><strong>${esc(c.name)}</strong></td><td>${esc(c.slug||"—")}</td><td>${esc(c.category_type||"—")}</td><td><span class="pill ${c.is_active?"active":"inactive"}">${c.is_active?"ACTIVE":"INACTIVE"}</span></td><td><div class="row-actions"><button class="btn btn-outline btn-sm" data-edit-category="${esc(c.id)}">Edit</button><button class="btn btn-danger btn-sm" data-delete-category="${esc(c.id)}">Delete</button></div></td></tr>`).join(""):'<tr><td colspan="5" class="empty">No categories found.</td></tr>';$("categories-count").textContent=rows.length+" categories";}
+function resetCategory(){$("category-form").reset();$("category-id").value="";$("category-type").value="store";$("category-active").value="true";$("category-form-title").textContent="Add category";$("save-category").textContent="Save category";$("category-form-card").classList.add("hidden");}
+function openCategory(c){resetCategory();if(c){$("category-id").value=c.id;$("category-name").value=c.name||"";$("category-slug").value=c.slug||"";$("category-type").value=c.category_type||"store";$("category-active").value=String(!!c.is_active);$("category-description").value=c.description||"";$("category-form-title").textContent="Edit category";$("save-category").textContent="Update category";}$("category-form-card").classList.remove("hidden");$("category-form-card").scrollIntoView({behavior:"smooth"});}
+$("new-category").onclick=()=>openCategory(null);$("cancel-category").onclick=resetCategory;
+$("category-name").oninput=()=>{if(!$("category-id").value)$("category-slug").value=slug($("category-name").value);};
+$("category-form").addEventListener("submit",async e=>{e.preventDefault();const id=$("category-id").value,record={name:$("category-name").value.trim(),slug:$("category-slug").value.trim()||slug($("category-name").value),category_type:$("category-type").value.trim()||"store",is_active:$("category-active").value==="true",description:$("category-description").value.trim()||null};busy("save-category",true);const result=id?await db.from("categories").update(record).eq("id",id):await db.from("categories").insert(record);busy("save-category",false);if(result.error){msg("categories-message",result.error.message,"error");return;}resetCategory();notify(id?"Category updated.":"Category added.");await loadCategories();renderStores();});
+$("categories-body").addEventListener("click",async e=>{const edit=e.target.closest("[data-edit-category]"),del=e.target.closest("[data-delete-category]");if(edit){const c=state.categories.find(x=>String(x.id)===edit.dataset.editCategory);if(c)openCategory(c);}if(del){const c=state.categories.find(x=>String(x.id)===del.dataset.deleteCategory);if(c&&confirm(`Delete category "${c.name}"?`)){const {error}=await db.from("categories").delete().eq("id",c.id);if(error){msg("categories-message",error.message,"error");return;}notify("Category deleted.");await loadCategories();await loadStores();}}});
+$("category-search").addEventListener("input",renderCategories);
+
+/* WEBSITE SETTINGS */
+async function loadSettings(){const {data,error}=await db.from("website_settings").select("id,about_title,about_content,contact_email,contact_phone,social_links").eq("id","main").maybeSingle();if(error){msg("settings-message",error.message,"error");return;}const s=data||{},links=s.social_links&&typeof s.social_links==="object"?s.social_links:{};$("about-title").value=s.about_title||"";$("about-content").value=s.about_content||"";$("contact-email").value=s.contact_email||"";$("contact-phone").value=s.contact_phone||"";["facebook","instagram","youtube","tiktok","pinterest"].forEach(k=>$("social-"+k).value=links[k]||"");}
+$("settings-form").addEventListener("submit",async e=>{e.preventDefault();const record={id:"main",about_title:$("about-title").value.trim(),about_content:$("about-content").value.trim(),contact_email:$("contact-email").value.trim(),contact_phone:$("contact-phone").value.trim(),social_links:{facebook:$("social-facebook").value.trim(),instagram:$("social-instagram").value.trim(),youtube:$("social-youtube").value.trim(),tiktok:$("social-tiktok").value.trim(),pinterest:$("social-pinterest").value.trim()},updated_at:new Date().toISOString()};busy("save-settings",true);const {error}=await db.from("website_settings").upsert(record,{onConflict:"id"});busy("save-settings",false);if(error){msg("settings-message",error.message,"error");return;}msg("settings-message","Website settings saved successfully.","success");notify("Website settings saved.");});
 
 /* FAQ MANAGEMENT */
-function resetFaqForm(){
- $("faqForm").reset();
- $("faqEditId").value="";
- $("faqSortOrder").value="0";
- $("faqActive").value="true";
- $("faqFormHeading").textContent="Add New FAQ";
- $("saveFaqBtn").textContent="Save FAQ";
- $("faqFormPanel").classList.add("hidden");
-}
+function renderFaqs(){$("faq-list").innerHTML=state.faqs.length?state.faqs.map(f=>`<article class="faq-card"><h3>${esc(f.question)}</h3><p>${esc(f.answer)}</p><div class="faq-meta">${f.is_active?"ACTIVE":"INACTIVE"} · Sort order: ${Number(f.sort_order)||0}</div><div class="row-actions" style="justify-content:flex-start;margin-top:9px"><button class="btn btn-outline btn-sm" data-edit-faq="${esc(f.id)}">Edit</button><button class="btn btn-danger btn-sm" data-delete-faq="${esc(f.id)}">Delete</button></div></article>`).join(""):'<div class="empty">No FAQs added yet.</div>';}
+function resetFaq(){$("faq-form").reset();$("faq-id").value="";$("faq-order").value="0";$("faq-active").value="true";$("faq-form-title").textContent="Add FAQ";$("save-faq").textContent="Save FAQ";$("faq-form-card").classList.add("hidden");}
+function openFaq(f){resetFaq();if(f){$("faq-id").value=f.id;$("faq-question").value=f.question||"";$("faq-answer").value=f.answer||"";$("faq-order").value=f.sort_order??0;$("faq-active").value=String(!!f.is_active);$("faq-form-title").textContent="Edit FAQ";$("save-faq").textContent="Update FAQ";}$("faq-form-card").classList.remove("hidden");$("faq-form-card").scrollIntoView({behavior:"smooth"});}
+$("new-faq").onclick=()=>openFaq(null);$("cancel-faq").onclick=resetFaq;
+$("faq-form").addEventListener("submit",async e=>{e.preventDefault();const id=$("faq-id").value,record={question:$("faq-question").value.trim(),answer:$("faq-answer").value.trim(),sort_order:Number($("faq-order").value)||0,is_active:$("faq-active").value==="true"};busy("save-faq",true);const result=id?await db.from("faqs").update(record).eq("id",id):await db.from("faqs").insert(record);busy("save-faq",false);if(result.error){msg("faqs-message",result.error.message,"error");return;}resetFaq();notify(id?"FAQ updated.":"FAQ added.");await loadFaqs();renderDashboard();});
+$("faq-list").addEventListener("click",async e=>{const edit=e.target.closest("[data-edit-faq]"),del=e.target.closest("[data-delete-faq]");if(edit){const f=state.faqs.find(x=>String(x.id)===edit.dataset.editFaq);if(f)openFaq(f);}if(del){const f=state.faqs.find(x=>String(x.id)===del.dataset.deleteFaq);if(f&&confirm("Delete this FAQ?")){const {error}=await db.from("faqs").delete().eq("id",f.id);if(error){msg("faqs-message",error.message,"error");return;}notify("FAQ deleted.");await loadFaqs();renderDashboard();}}});
 
-$("addFaqBtn").onclick=()=>{
- resetFaqForm();
- $("faqFormPanel").classList.remove("hidden");
- window.scrollTo({top:0,behavior:"smooth"});
-};
-
-$("cancelFaqBtn").onclick=resetFaqForm;
-
-$("faqForm").addEventListener("submit",async e=>{
- e.preventDefault();
-
- const id=$("faqEditId").value;
- const record={
-  question:$("faqQuestion").value.trim(),
-  answer:$("faqAnswer").value.trim(),
-  sort_order:Number($("faqSortOrder").value)||0,
-  is_active:$("faqActive").value==="true"
- };
-
- if(!record.question||!record.answer){
-  message("faqMessage","Question aur Answer dono required hain.");
-  return;
- }
-
- $("saveFaqBtn").disabled=true;
- message("faqMessage","Saving FAQ...",true);
-
- const result=id
-  ?await client.from("faqs").update(record).eq("id",id)
-  :await client.from("faqs").insert(record);
-
- $("saveFaqBtn").disabled=false;
-
- if(result.error){
-  message("faqMessage","FAQ save error: "+result.error.message);
-  return;
- }
-
- message("faqMessage",id?"FAQ updated successfully!":"FAQ added successfully!",true);
- resetFaqForm();
- await loadFaqs();
-});
-
-async function loadFaqs(){
- $("faqList").textContent="Loading FAQs...";
-
- const {data,error}=await client.from("faqs")
-  .select("id,question,answer,sort_order,is_active,created_at")
-  .order("sort_order",{ascending:true})
-  .order("created_at",{ascending:false});
-
- if(error){
-  $("faqList").textContent="Could not load FAQs: "+error.message;
-  message("faqMessage","FAQ loading error: "+error.message);
-  return;
- }
-
- faqs=data||[];
- renderFaqs();
-}
-
-function renderFaqs(){
- const list=$("faqList");
- list.replaceChildren();
-
- if(!faqs.length){
-  addText(list,"p","No FAQs added yet.");
-  return;
- }
-
- faqs.forEach(faq=>{
-  const card=document.createElement("article");
-  card.className="faq-card";
-
-  addText(card,"h3",faq.question||"Untitled question");
-  addText(card,"p",faq.answer||"");
-  addText(card,"p","Status: "+(faq.is_active?"Active":"Inactive"),
-   faq.is_active?"status-active":"status-inactive");
-  addText(card,"p","Sort Order: "+(faq.sort_order??0),"muted");
-
-  const actions=document.createElement("div");
-  actions.className="actions";
-
-  const edit=document.createElement("button");
-  edit.textContent="Edit";
-  edit.onclick=()=>editFaq(faq);
-  actions.appendChild(edit);
-
-  const del=document.createElement("button");
-  del.textContent="Delete";
-  del.className="danger";
-  del.onclick=()=>deleteFaq(faq.id,faq.question);
-  actions.appendChild(del);
-
-  card.appendChild(actions);
-  list.appendChild(card);
- });
-}
-
-function editFaq(faq){
- $("faqEditId").value=faq.id;
- $("faqQuestion").value=faq.question||"";
- $("faqAnswer").value=faq.answer||"";
- $("faqSortOrder").value=faq.sort_order??0;
- $("faqActive").value=String(!!faq.is_active);
- $("faqFormHeading").textContent="Edit FAQ";
- $("saveFaqBtn").textContent="Update FAQ";
- $("faqFormPanel").classList.remove("hidden");
- window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function deleteFaq(id,question){
- if(!confirm("Delete this FAQ? This cannot be undone."))return;
-
- const {error}=await client.from("faqs").delete().eq("id",id);
-
- if(error){
-  message("faqMessage","FAQ delete error: "+error.message);
-  return;
- }
-
- message("faqMessage","FAQ deleted successfully.",true);
- await loadFaqs();
-}
-
-/* DASHBOARD TABS */
-const sections=["stores","coupons","categories","campaigns","analytics","website"];
-
-const headings={
- stores:"Stores",
- coupons:"Coupons",
- categories:"Categories",
- campaigns:"Promo Campaigns",
- analytics:"Analytics",
- website:"Website Settings"
-};
-
-sections.forEach(key=>{
- const btn=$(key+"Tab");
-
- btn.onclick=()=>{
-  sections.forEach(k=>{
-   $(k+"Tab").className=k===key?"active":"secondary";
-  });
-
-  $("storesSection").classList.toggle("hidden",key!=="stores");
-  $("couponsSection").classList.toggle("hidden",key!=="coupons");
-  $("websiteSection").classList.toggle("hidden",key!=="website");
-
-  $("otherSection").classList.toggle(
-   "hidden",
-   !["categories","campaigns","analytics"].includes(key)
-  );
-
-  if(key==="coupons"){
-   loadStoresForCoupons();
-   loadCoupons();
-  }
-
-  if(key==="website"){
-   loadWebsiteSettings();
-   loadFaqs();
-  }
-
-  if(["categories","campaigns","analytics"].includes(key)){
-   $("otherHeading").textContent=headings[key];
-
-   $("otherText").textContent=key==="analytics"
-    ?"Analytics will be connected after click tracking is configured."
-    :"This section will be connected after its database columns and security are checked.";
-  }
- };
-});
-
-client.auth.getSession().then(({data,error})=>{
- if(error){
-  showLogin();
-  return;
- }
-
- if(data.session)showDashboard();
- else showLogin();
-});
+(async()=>{const {data,error}=await db.auth.getSession();if(error){showLogin();msg("login-message",error.message,"error");return;}if(data.session)await showApp();else showLogin();})();
 </script>
 </body>
 </html>
-'''
-
-path = Path("/mnt/data/discount-price-admin-with-website-settings.html")
-path.write_text(html, encoding="utf-8")
-print(f"Created: {path}")
-print(f"File size: {path.stat().st_size:,} bytes")
