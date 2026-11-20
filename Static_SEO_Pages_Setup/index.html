@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Discover the latest online deals, verified discount codes and special offers from stores worldwide. Save smarter with Discount Price.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="Discount Price">
+<meta name="theme-color" content="#ffffff">
+<link rel="canonical" href="https://discountprice.github.io/discount-price/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Discount Price">
+<meta property="og:title" content="Discount Price — Deals, Coupons & Offers">
+<meta property="og:description" content="Discover online deals, discount codes and special offers from stores worldwide.">
+<meta property="og:url" content="https://discountprice.github.io/discount-price/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Discount Price — Deals, Coupons & Offers">
+<meta name="twitter:description" content="Discover online deals, discount codes and special offers from stores worldwide.">
+<script type="application/ld+json" id="websiteSchema">{"@context":"https://schema.org","@type":"WebSite","name":"Discount Price","url":"https://discountprice.github.io/discount-price/","description":"Discover online deals, discount codes and special offers from stores worldwide.","inLanguage":"en","potentialAction":{"@type":"SearchAction","target":"https://discountprice.github.io/discount-price/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<title>Discount Price — Deals, Coupons & Offers</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+
+:root{--red:#e00000;--red-dark:#b90000;--pink:#fff4f5;--ink:#171717;--muted:#666;--line:#e7dfe0;--page:#fff;--shadow:0 2px 7px rgba(0,0,0,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:13px}
+a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}
+.container{width:min(1000px,calc(100% - 28px));margin:auto}
+.topbar{height:14px;background:#503746}
+.header{background:#fff5f6;border-bottom:1px solid #f0e5e7;position:sticky;top:0;z-index:20}
+.header-inner{height:40px;display:flex;align-items:center;gap:24px}
+.logo{font-size:18px;font-weight:900;color:var(--red);white-space:nowrap;letter-spacing:-.6px}.logo span{color:#252525}
+.search-wrap{display:flex;align-items:center;max-width:250px;border:1px solid #d9d9df;border-radius:18px;overflow:hidden;background:#fff;margin-left:auto;height:27px}
+.search-wrap input{border:0;outline:0;padding:5px 12px;min-width:0;width:190px;font-size:11px}
+.search-wrap button{border:0;background:transparent;color:#333;padding:0 10px;font-size:11px}
+.header-link{font-size:10px;font-weight:700;white-space:nowrap}.header-link:hover,.nav a:hover{color:var(--red)}
+.mobile-search{display:none}.nav{background:#fff;border-bottom:1px solid #eee}
+.nav-inner{display:flex;align-items:center;gap:23px;min-height:29px;overflow:auto;white-space:nowrap}
+.nav a{font-size:10px;font-weight:700;color:#333;padding:8px 0}
+.hero{background:linear-gradient(110deg,#fff5f6,#fff);color:#222;padding:17px 0 7px}
+.hero-inner{display:block}.hero h1{font-size:23px;line-height:1.15;margin:0 0 7px;font-weight:900}.hero p{font-size:12px;line-height:1.5;margin:0 0 10px;color:#555}.hero-btn{display:inline-block;background:var(--red);color:#fff;font-weight:800;padding:8px 15px;border-radius:20px;font-size:11px}.hero-art{display:none}
+main{padding:12px 0 45px}
+.content-layout{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:18px;align-items:start}
+.main-column{min-width:0}.side-column{min-width:0;padding-top:4px}
+.section{margin-bottom:23px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:12px}
+.section-head h2{font-size:17px;margin:0;font-weight:900}.section-head p{margin:4px 0 0;color:var(--muted);font-size:11px}
+.text-link{font-size:11px;color:var(--red);font-weight:800}
+.category-row{display:flex;gap:8px;overflow:auto;padding:2px 1px 7px}
+.category-chip{border:1px solid #eee;background:#fff;border-radius:18px;padding:7px 12px;font-size:11px;font-weight:700;white-space:nowrap}
+.category-chip:hover,.category-chip.active{background:var(--red);border-color:var(--red);color:#fff}
+.store-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.store-card{background:#fff;border:1px solid var(--line);border-radius:7px;padding:11px 8px;text-align:center;min-width:0;box-shadow:0 2px 5px rgba(0,0,0,.04)}
+.store-card:hover{box-shadow:var(--shadow);border-color:#f2bfc4}
+.store-logo{height:55px;display:flex;align-items:center;justify-content:center;margin-bottom:7px}
+.store-logo img{max-width:100%;max-height:50px;object-fit:contain}.store-logo .letter-logo{width:49px;height:49px;border-radius:6px;display:grid;place-items:center;background:#fff;color:#111;border:1px solid #ddd;font-size:21px;font-weight:900}
+.store-card h3{font-size:12px;margin:0 0 5px;overflow-wrap:anywhere}.store-count{font-size:10px;color:var(--muted);margin-bottom:8px}
+.small-red-btn{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:6px 11px;border-radius:16px}
+.deal-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.deal-card{background:#fff5f6;border:1px solid #f2e5e6;border-radius:7px;padding:10px 9px 8px;display:flex;flex-direction:column;gap:6px;min-width:0;min-height:145px;box-shadow:0 2px 5px rgba(0,0,0,.07)}
+.deal-logo{height:25px;display:flex;align-items:center;justify-content:flex-end;order:0;min-width:0}
+.deal-logo img{max-width:75px;max-height:24px;object-fit:contain}.deal-logo .letter-logo{font-size:17px;font-weight:900;color:#111}
+.deal-content{min-width:0;display:flex;flex-direction:column;flex:1}
+.deal-store{font-size:9px;color:#555;font-weight:700;order:-1;margin:0 0 4px}
+.deal-card h3{font-size:11px;line-height:1.35;margin:0 0 5px;min-height:27px}
+.deal-desc{font-size:9px;color:#444;line-height:1.4;margin:0 0 8px}
+.deal-actions{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:auto}
+.claim-btn,.code-btn{border:0;border-radius:16px;padding:6px 12px;font-size:9px;font-weight:800}
+.claim-btn{background:var(--red);color:#fff;text-align:center;min-width:68px}.claim-btn:hover{background:var(--red-dark)}
+.code-btn{background:#fff;border:1px dashed #c99;color:#222}
+.pill{display:inline-block;background:#fff;color:#333;border-radius:3px;padding:3px 5px;font-size:9px;font-weight:800;margin-bottom:4px}
+.empty{background:#fff;border:1px dashed #ddd;border-radius:7px;padding:25px;text-align:center;color:var(--muted);grid-column:1/-1}
+.store-page-head{background:#fff;border-radius:8px;padding:7px 0 18px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;border-bottom:1px solid #eee}
+.store-page-head .store-logo{width:103px;height:65px;flex:0 0 103px;margin:0;border:1px solid #ddd;border-radius:7px}
+.store-page-head h1{font-size:20px;margin:0 0 7px}.store-page-head p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+.back-link{display:inline-block;color:var(--red);font-weight:800;font-size:11px;margin-bottom:10px}
+.side-box{background:#fff5f6;border:1px solid #f0dfe2;border-radius:8px;padding:11px;margin-bottom:10px;font-size:10px;line-height:1.5}
+.side-box h3{font-size:12px;margin:0 0 7px}.side-box p{margin:4px 0;color:#333}
+.side-box .submit-btn{display:block;background:var(--red);color:#fff;border-radius:18px;padding:7px 12px;text-align:center;font-weight:800;width:max-content;margin:8px auto}
+.side-social{color:var(--red);font-size:15px;text-align:center;font-weight:900;letter-spacing:4px;margin:8px 0}
+.author{display:flex;align-items:center;gap:8px;margin-bottom:7px}.author-avatar{width:31px;height:31px;border-radius:50%;background:#ddd;display:grid;place-items:center;font-weight:900;color:#555}
+.newsletter{background:#fff5f6;border:1px solid #f0dfe2;color:#222;border-radius:8px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.newsletter h2{font-size:16px;margin:0 0 5px}.newsletter p{font-size:11px;color:#555;margin:0}
+.newsletter-form{display:flex;gap:5px;max-width:300px;width:100%}.newsletter-form input{flex:1;min-width:0;padding:9px;border:1px solid #ddd;border-radius:5px}.newsletter-form button{border:0;border-radius:5px;padding:0 12px;background:var(--red);color:#fff;font-weight:800}
+footer{background:#30252b;color:#ddd;padding:25px 0 18px} .footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer .logo{margin-bottom:7px}footer p{font-size:11px;color:#ccc;line-height:1.6;max-width:350px}
+.footer-links{display:flex;gap:14px;flex-wrap:wrap;font-size:11px}.footer-links a:hover{color:#fff}
+.copyright{border-top:1px solid #51454b;margin-top:18px;padding-top:12px;font-size:10px;color:#aaa}
+.faq-list{display:grid;grid-template-columns:1fr;gap:8px}.faq-item{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#fff}.faq-item h3{font-size:13px;margin:0 0 6px}.faq-item p{font-size:12px;line-height:1.6;color:#555;margin:0}.blog-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:13px;min-height:150px}.blog-card h3{font-size:14px;margin:5px 0 7px}.blog-card p{font-size:11px;color:#555;line-height:1.55;margin:0 0 10px}.blog-card a{color:var(--red);font-weight:800;font-size:11px}.status{font-size:11px;color:var(--muted);margin-top:8px}.hidden{display:none!important}.loading{padding:25px;text-align:center;color:var(--muted);grid-column:1/-1}
+@media(max-width:850px){.container{width:min(100% - 24px,1000px)}.content-layout{grid-template-columns:minmax(0,1fr) 190px;gap:12px}.store-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){
+ .header-inner{height:54px;gap:12px}.logo{font-size:20px}.header-link{display:none}.search-wrap{display:none}.mobile-search{display:flex;padding:0 0 9px}.mobile-search .search-wrap{display:flex;max-width:none;width:100%;margin:0}
+ .nav-inner{gap:16px;min-height:34px}.nav a{font-size:10px}.hero{padding:18px 0}.hero h1{font-size:23px}
+ main{padding-top:14px}.content-layout{grid-template-columns:1fr}.side-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.side-box{margin:0}.store-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .deal-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.deal-card{min-height:150px;padding:9px 8px}.deal-card h3{font-size:10px}
+ .store-page-head{gap:10px}.store-page-head .store-logo{width:78px;flex-basis:78px;height:58px}.store-page-head h1{font-size:17px}
+ .newsletter{display:block;padding:15px}.newsletter-form{margin-top:12px}.side-column .side-box:last-child{grid-column:1/-1}
+}
+@media(max-width:390px){.deal-list{grid-template-columns:1fr}.side-column{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<header class="header">
+  <div class="container header-inner">
+    <a class="logo" href="./">Discount<span>Price</span></a>
+    <form class="search-wrap" id="searchForm">
+      <input id="searchInput" type="search" placeholder="Search stores, deals and coupons..." aria-label="Search">
+      <button type="submit">Search</button>
+    </form>
+    <a class="header-link" href="#latest-deals">Latest Deals</a>
+    <a class="header-link" href="#popular-stores">Stores</a><a class="header-link" href="#blog">Blog</a><a class="header-link" href="#faqs">FAQs</a>
+  </div>
+  <div class="container mobile-search">
+    <form class="search-wrap" id="mobileSearchForm" style="display:flex;max-width:none;width:100%">
+      <input id="mobileSearchInput" type="search" placeholder="Search stores and deals..." aria-label="Search">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+</header>
+<nav class="nav"><div class="container nav-inner" id="categoryNav">
+  <a href="./">Home</a><a href="#popular-stores">Stores</a><a href="#latest-deals">Latest Deals</a><a href="#blog">Blog</a><a href="#faqs">FAQs</a>
+</div></nav>
+<section class="hero" id="homeHero">
+ <div class="container hero-inner">
+  <div><h1>Save More With The Best Deals</h1><p>Explore the latest offers, discount codes and special promotions from your favourite stores.</p><a class="hero-btn" href="#latest-deals">Explore Deals</a></div>
+  <div class="hero-art"><strong>DEALS</strong><span>SMART SHOPPING STARTS HERE</span></div>
+ </div>
+</section>
+<main class="container">
+ <div class="content-layout">
+  <div class="main-column">
+   <section id="storeProfile" class="hidden"></section>
+   <section id="blogArticle" class="hidden section"></section>
+   <section class="section" id="categorySection">
+    <div class="section-head"><div><h2>Shop By Category</h2><p>Find offers from the categories you love</p></div></div>
+    <div class="category-row" id="categoryList"><button class="category-chip active" data-category="all">All Categories</button></div>
+   </section>
+   <section class="section" id="popular-stores">
+    <div class="section-head"><div><h2>Popular Stores</h2><p>Explore offers from popular brands and stores</p></div><a class="text-link" href="#latest-deals">View Deals</a></div>
+    <div class="store-grid" id="storeList"><div class="loading">Loading stores...</div></div>
+   </section>
+   <section class="section" id="latest-deals">
+    <div class="section-head"><div><h2 id="dealHeading">Latest Deals & Coupons</h2><p>Fresh offers to help you save on your shopping</p></div></div>
+    <div class="deal-list" id="couponList"><div class="loading">Loading latest deals...</div></div>
+   </section>
+   <section class="section" id="blog">
+    <div class="section-head"><div><h2>Shopping Tips & Guides</h2><p>Helpful guides to make smarter shopping decisions worldwide</p></div></div>
+    <div class="deal-list" id="blogList"><div class="loading">Loading articles...</div></div>
+   </section>
+   <section class="section" id="faqs">
+    <div class="section-head"><div><h2>Frequently Asked Questions</h2><p>Answers about deals, discount codes and using Discount Price</p></div></div>
+    <div id="faqList" class="faq-list"><div class="loading">Loading FAQs...</div></div>
+   </section>
+   <section class="section newsletter">
+    <div><h2>Get the best deals in your inbox</h2><p>Stay updated with new offers and discount codes.</p></div>
+    <form class="newsletter-form" id="newsletterForm"><input id="newsletterEmail" type="email" placeholder="Enter your email address" required><button type="submit">Subscribe</button></form>
+   </section>
+   <div class="status" id="pageStatus" aria-live="polite"></div>
+  </div>
+  <aside class="side-column">
+   <div class="side-box"><h3>✦ Store Information</h3><p>Latest offers and verified coupon codes.</p><p>Updated regularly</p><p>Save more with Discount Price.</p><a class="submit-btn" href="#latest-deals">Submit Coupon</a><div class="side-social">f ◎ ▶ ♪ in</div></div>
+   <div class="side-box"><h3>Contact & Support</h3><p>✉ Contact Support</p><p>For help with deals, offers and coupons, contact our support team.</p></div>
+   <div class="side-box"><h3>Why Trust Us?</h3><p>We help shoppers discover useful offers, discount codes and savings from stores around the world.</p><p>Always check offer terms on the store website before purchase.</p></div>
+   <div class="side-box"><div class="author"><div class="author-avatar">DP</div><strong>Discount Price Team</strong></div><p>We share helpful deals, shopping tips and special offers to make your shopping easier.</p></div>
+  </aside>
+ </div>
+</main>
+<footer>
+ <div class="container">
+  <div class="footer-inner">
+   <div><div class="logo">Discount<span style="color:#fff">Price</span></div><p>Find deals, coupons and special offers from stores around the world. Shop smarter and save more with Discount Price.</p></div>
+   <div class="footer-links"><a href="./">Home</a><a href="#popular-stores">Stores</a><a href="#latest-deals">Deals</a><a href="#blog">Blog</a><a href="#faqs">FAQs</a><a href="./privacy.html">Privacy</a><a href="./affiliate-disclosure.html">Affiliate Disclosure</a></div>
+  </div>
+  <div class="copyright">© <span id="year"></span> Discount Price. All rights reserved.</div>
+ </div>
+</footer>
+<script>
+/* Discount Price public website. Keep your admin.html file separate. */
+const SUPABASE_URL = "https://eyaukiovgugmiyytybdg.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_qahiC18UeUqc6qVosbenCw_zKmQ7vb1";
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let stores = [];
+let categories = [];
+let coupons = [];
+let blogPosts = [];
+let faqs = [];
+let activeCategory = "all";
+let searchTerm = "";
+
+const $ = (id) => document.getElementById(id);
+$("year").textContent = new Date().getFullYear();
+
+function safeText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[ch]);
+}
+function isActive(row) {
+  return String(row?.status ?? "").toLowerCase() === "active";
+}
+function storeLogo(store, large=false) {
+  const name = safeText(store?.name || "Store");
+  if (store?.logo_url) {
+    return `<img src="${safeText(store.logo_url)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.classList.remove('hidden')"><span class="letter-logo hidden">${name.charAt(0).toUpperCase()}</span>`;
+  }
+  return `<span class="letter-logo">${name.charAt(0).toUpperCase()}</span>`;
+}
+function getStoreForCoupon(coupon) {
+  return stores.find(store => String(store.id) === String(coupon.store_id));
+}
+function getCouponCount(store) {
+  return coupons.filter(coupon => String(coupon.store_id) === String(store.id)).length;
+}
+function storeUrl(store) {
+  return `stores/${encodeURIComponent(store.slug || store.id)}/`;
+}
+function renderCategories() {
+  const items = [`<button class="category-chip ${activeCategory==="all"?"active":""}" data-category="all">All Categories</button>`];
+  categories.filter(category => category.is_active !== false).forEach(category => {
+    items.push(`<button class="category-chip ${activeCategory===String(category.id)?"active":""}" data-category="${safeText(category.id)}">${safeText(category.name)}</button>`);
+  });
+  $("categoryList").innerHTML = items.join("");
+  $("categoryNav").innerHTML = `<a href="./">Home</a><a href="#popular-stores">Stores</a><a href="#latest-deals">Latest Deals</a><a href="#blog">Blog</a><a href="#faqs">FAQs</a>` +
+    categories.filter(category => category.is_active !== false).slice(0,8).map(category =>
+      `<a href="#latest-deals" data-nav-category="${safeText(category.id)}">${safeText(category.name)}</a>`
+    ).join("");
+}
+function renderStores() {
+  let list = stores.filter(isActive);
+  if (activeCategory !== "all") list = list.filter(store => String(store.category_id) === String(activeCategory));
+  if (searchTerm) list = list.filter(store => (store.name || "").toLowerCase().includes(searchTerm));
+  if (!list.length) {
+    $("storeList").innerHTML = `<div class="empty">No stores found. Try another category or search.</div>`;
+    return;
+  }
+  $("storeList").innerHTML = list.map(store => `
+    <article class="store-card">
+      <a href="${storeUrl(store)}">
+        <div class="store-logo">${storeLogo(store)}</div>
+        <h3>${safeText(store.name)}</h3>
+        <div class="store-count">${getCouponCount(store)} active deal${getCouponCount(store)===1?"":"s"}</div>
+        <span class="small-red-btn">View Store Deals</span>
+      </a>
+    </article>`).join("");
+}
+function renderCoupons() {
+  let list = coupons.filter(isActive).filter(coupon => {
+    const store = getStoreForCoupon(coupon);
+    return store && isActive(store);
+  });
+  if (activeCategory !== "all") list = list.filter(coupon => {
+    const store = getStoreForCoupon(coupon);
+    return store && String(store.category_id) === String(activeCategory);
+  });
+  if (searchTerm) list = list.filter(coupon => {
+    const store = getStoreForCoupon(coupon);
+    return `${coupon.title||""} ${coupon.description||""} ${store?.name||""}`.toLowerCase().includes(searchTerm);
+  });
+  list.sort((a,b) => Number(b.is_featured===true)-Number(a.is_featured===true) || Number(a.sort_order||0)-Number(b.sort_order||0));
+  if (!list.length) {
+    $("couponList").innerHTML = `<div class="empty">No active deals found right now.</div>`;
+    return;
+  }
+  $("couponList").innerHTML = list.map(coupon => {
+    const store = getStoreForCoupon(coupon);
+    const hasCode = String(coupon.coupon_type||"").toLowerCase().includes("code") || Boolean(coupon.code);
+    const description = coupon.description ? `<p class="deal-desc">${safeText(coupon.description)}</p>` : "";
+    const codeButton = hasCode && coupon.code
+      ? `<button class="code-btn" type="button" data-copy="${safeText(coupon.code)}">Copy Code: ${safeText(coupon.code)}</button>`
+      : "";
+    return `<article class="deal-card">
+      <a class="deal-logo" href="${storeUrl(store)}">${storeLogo(store)}</a>
+      <div class="deal-content">
+        ${coupon.is_featured ? `<span class="pill">FEATURED DEAL</span>` : ""}
+        <div class="deal-store"><a href="${storeUrl(store)}">${safeText(store.name)}</a></div>
+        <h3>${safeText(coupon.title || "Special Offer")}</h3>
+        ${description}
+        <div class="deal-actions">${codeButton}<a class="claim-btn" href="${safeText(coupon.affiliate_url || store.aff_url || store.web_url || "#")}" target="_blank" rel="nofollow sponsored noopener">Get Deal</a></div>
+      </div>
+    </article>`;
+  }).join("");
+}
+function renderStorePage(store) {
+  const storeDescription = store.description || `Find current deals, offers and discount codes for ${store.name} at Discount Price.`;
+  updatePageSEO(store.seo_title || `${store.name} Deals & Promo Codes | Discount Price`, store.seo_description || storeDescription.slice(0,155), `https://discountprice.github.io/discount-price/stores/${encodeURIComponent(store.slug || store.id)}/`);
+  $("homeHero").classList.add("hidden");
+  $("categorySection").classList.add("hidden");
+  $("popular-stores").classList.add("hidden");
+  $("storeProfile").classList.remove("hidden");
+  $("dealHeading").textContent = `${store.name} Deals & Coupons`;
+  $("storeProfile").innerHTML = `
+    <a class="back-link" href="./">← Back to all stores</a>
+    <div class="store-page-head">
+      <div class="store-logo">${storeLogo(store)}</div>
+      <div><h1>${safeText(store.name)} Deals & Promo Codes</h1>
+      <p>${safeText(storeDescription)}</p></div>
+    </div>
+    <section class="section" id="storeGuides"><h2>${safeText(store.name)} Guides & Tips</h2><div class="deal-list" id="storeBlogList"></div></section>
+    <section class="section" id="storeFaqs"><h2>${safeText(store.name)} FAQs</h2><div class="faq-list" id="storeFaqList"></div></section>`;
+  const relatedPosts = blogPosts.filter(post => post.status === "published" && String(post.store_id||"") === String(store.id));
+  $("storeBlogList").innerHTML = relatedPosts.length ? relatedPosts.map(post => `<article class="blog-card"><h3>${safeText(post.title)}</h3><p>${safeText(post.excerpt||"")}</p><a href="blog/${encodeURIComponent(post.slug)}/">Read guide</a></article>`).join("") : `<p>Store guides will be added soon.</p>`;
+  const relatedFaqs = faqs.filter(f => f.is_active && String(f.store_id||"") === String(store.id));
+  $("storeFaqList").innerHTML = relatedFaqs.length ? relatedFaqs.map(f => `<article class="faq-item"><h3>${safeText(f.question)}</h3><p>${safeText(f.answer)}</p></article>`).join("") : `<p>Store-specific FAQs will be added soon.</p>`;
+  const storeCoupons = coupons.filter(coupon => String(coupon.store_id) === String(store.id) && isActive(coupon));
+  $("couponList").innerHTML = "";
+  if (!storeCoupons.length) $("couponList").innerHTML = `<div class="empty">There are currently no active deals for this store.</div>`;
+  else {
+    const oldCategory = activeCategory;
+    activeCategory = "all";
+    const originalCoupons = coupons;
+    coupons = storeCoupons;
+    renderCoupons();
+    coupons = originalCoupons;
+    activeCategory = oldCategory;
+  }
+}
+function renderBlog() {
+  const posts = blogPosts.filter(post => post.status === "published");
+  $("blogList").innerHTML = posts.length ? posts.map(post => `
+    <article class="blog-card">
+      ${post.featured_image ? `<img src="${safeText(post.featured_image)}" alt="${safeText(post.title)}" loading="lazy" style="width:100%;height:115px;object-fit:cover;border-radius:6px">` : ""}
+      <h3>${safeText(post.title)}</h3>
+      <p>${safeText(post.excerpt || "")}</p>
+      <a href="${post.external_url ? safeText(post.external_url) : `blog/${encodeURIComponent(post.slug)}/`}" ${post.external_url ? 'target="_blank" rel="noopener"' : ""}>Read more</a>
+    </article>`).join("") : `<div class="empty">New shopping guides are coming soon.</div>`;
+}
+function renderBlogArticle(post) {
+  $("homeHero").classList.add("hidden");
+  $("categorySection").classList.add("hidden");
+  $("popular-stores").classList.add("hidden");
+  $("latest-deals").classList.add("hidden");
+  $("blog").classList.add("hidden");
+  $("faqs").classList.add("hidden");
+  $("blogArticle").classList.remove("hidden");
+  $("blogArticle").innerHTML = `<a class="back-link" href="./#blog">← Back to Blog</a>
+    <article><h1 style="font-size:26px;line-height:1.25">${safeText(post.title)}</h1>
+    ${post.featured_image ? `<img src="${safeText(post.featured_image)}" alt="${safeText(post.title)}" style="width:100%;max-height:360px;object-fit:cover;border-radius:8px" loading="lazy">` : ""}
+    <p style="font-size:14px;line-height:1.8;white-space:pre-wrap">${safeText(post.content || post.excerpt || "")}</p></article>`;
+  updatePageSEO(post.seo_title || `${post.title} | Discount Price`, post.seo_description || post.excerpt || post.title, `https://discountprice.github.io/discount-price/blog/${encodeURIComponent(post.slug)}/`);
+}
+function renderFaqs() {
+  $("faqList").innerHTML = faqs.length ? faqs.filter(f => f.is_active && !f.store_id).map(f => `
+    <article class="faq-item"><h3>${safeText(f.question)}</h3><p>${safeText(f.answer)}</p></article>`).join("") : `<div class="empty">FAQs will be added soon.</div>`;
+}
+function updatePageSEO(title, description, canonical) {
+  document.title = title;
+  const meta = document.querySelector('meta[name="description"]');
+  if (meta) meta.setAttribute("content", description);
+  const link = document.querySelector('link[rel="canonical"]');
+  if (link && canonical) link.setAttribute("href", canonical);
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+  const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+  if (ogTitle) ogTitle.setAttribute("content", title);
+  if (ogDescription) ogDescription.setAttribute("content", description);
+  if (ogUrl && canonical) ogUrl.setAttribute("content", canonical);
+  if (twitterTitle) twitterTitle.setAttribute("content", title);
+  if (twitterDescription) twitterDescription.setAttribute("content", description);
+}
+function renderAll() {
+  renderCategories();
+  renderStores();
+  renderCoupons();
+}
+async function loadWebsite() {
+  $("storeList").innerHTML = `<div class="loading">Loading stores...</div>`;
+  $("couponList").innerHTML = `<div class="loading">Loading latest deals...</div>`;
+  try {
+    const [storeResult, categoryResult, couponResult, blogResult, faqResult] = await Promise.all([
+      client.from("stores").select("id,name,slug,category_id,web_url,logo_url,description,aff_url,country,status,seo_title,seo_description,created_at"),
+      client.from("categories").select("id,name,slug,description,is_active,category_type").order("name"),
+      client.from("coupons").select("id,store_id,title,coupon_type,code,discount,is_featured,sort_order,description,affiliate_url,start_date,end_date,status,created_at").order("created_at",{ascending:false}),
+      client.from("blog_posts").select("id,title,slug,excerpt,content,featured_image,external_url,seo_title,seo_description,status,published_at,store_id").eq("status","published").order("published_at",{ascending:false}).limit(6),
+      client.from("faqs").select("id,question,answer,sort_order,is_active,store_id").eq("is_active",true).order("sort_order").limit(20)
+    ]);
+    if (storeResult.error) throw new Error("Stores: " + storeResult.error.message);
+    if (categoryResult.error) throw new Error("Categories: " + categoryResult.error.message);
+    if (couponResult.error) throw new Error("Coupons: " + couponResult.error.message);
+    if (blogResult.error) console.warn("Blog posts are not available yet:", blogResult.error.message);
+    if (faqResult.error) console.warn("FAQs are not available yet:", faqResult.error.message);
+    blogPosts = blogResult.data || [];
+    faqs = faqResult.data || [];
+    renderBlog();
+    renderFaqs();
+    stores = storeResult.data || [];
+    categories = categoryResult.data || [];
+    const today = new Date().toISOString().slice(0,10);
+    coupons = (couponResult.data || []).filter(coupon =>
+      (!coupon.start_date || coupon.start_date <= today) &&
+      (!coupon.end_date || coupon.end_date >= today)
+    );
+    renderAll();
+    const params = new URLSearchParams(location.search);
+    const requestedBlog = params.get("blog");
+    if (requestedBlog) {
+      const selectedPost = blogPosts.find(post => post.slug === requestedBlog);
+      if (selectedPost) renderBlogArticle(selectedPost);
+      else $("blogArticle").innerHTML = `<div class="empty">This article could not be found. <a href="./#blog">Return to Blog</a></div>`;
+    }
+    const requestedStore = params.get("store");
+    if (requestedStore) {
+      const selectedStore = stores.find(store => String(store.slug) === requestedStore || String(store.id) === requestedStore);
+      if (selectedStore && isActive(selectedStore)) renderStorePage(selectedStore);
+      else $("storeProfile").innerHTML = `<div class="empty">This store could not be found or is not currently active. <a class="back-link" href="./">Go back</a></div>`;
+    }
+  } catch (error) {
+    $("storeList").innerHTML = `<div class="empty">Could not load stores. ${safeText(error.message)}</div>`;
+    $("couponList").innerHTML = `<div class="empty">Could not load deals. Please check your Supabase table permissions and try again.</div>`;
+    $("pageStatus").textContent = "Website data could not be loaded: " + error.message;
+  }
+}
+function runSearch(value) {
+  searchTerm = String(value || "").trim().toLowerCase();
+  renderStores();
+  renderCoupons();
+  if (searchTerm) $("latest-deals").scrollIntoView({behavior:"smooth",block:"start"});
+}
+$("searchForm").addEventListener("submit", event => { event.preventDefault(); runSearch($("searchInput").value); $("mobileSearchInput").value=$("searchInput").value; });
+$("mobileSearchForm").addEventListener("submit", event => { event.preventDefault(); runSearch($("mobileSearchInput").value); $("searchInput").value=$("mobileSearchInput").value; });
+$("categoryList").addEventListener("click", event => {
+  const button = event.target.closest("[data-category]");
+  if (!button) return;
+  activeCategory = button.dataset.category;
+  renderAll();
+});
+$("categoryNav").addEventListener("click", event => {
+  const link = event.target.closest("[data-nav-category]");
+  if (!link) return;
+  event.preventDefault();
+  activeCategory = link.dataset.navCategory;
+  renderAll();
+  $("latest-deals").scrollIntoView({behavior:"smooth"});
+});
+$("couponList").addEventListener("click", async event => {
+  const button = event.target.closest("[data-copy]");
+  if (!button) return;
+  const code = button.dataset.copy;
+  try {
+    await navigator.clipboard.writeText(code);
+    const previous = button.textContent;
+    button.textContent = "Copied!";
+    setTimeout(() => button.textContent = previous, 1600);
+  } catch {
+    window.prompt("Copy this coupon code:", code);
+  }
+});
+$("newsletterForm").addEventListener("submit", event => {
+  event.preventDefault();
+  alert("Newsletter subscriptions are not available yet. Please check back soon.");
+  $("newsletterEmail").value = "";
+});
+loadWebsite();
+</script>
+</body>
+</html>
