@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://discountprice.github.io/discount-price/sitemap.xml
